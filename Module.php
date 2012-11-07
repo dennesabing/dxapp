@@ -1,13 +1,5 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace Dxapp;
 
 use Dx\Module as xModule;
@@ -42,24 +34,17 @@ class Module extends xModule
 		$moduleRouteListener = new ModuleRouteListener();
 		$moduleRouteListener->attach($eventManager);
 
-//		$evm = $services->get('doctrine.eventmanager.orm_default');
-//		$tablePrefix = new \Dx\Doctrine\Extension\TablePrefix('dx_');
-//		$evm->addEventListener(\Doctrine\ORM\Events::loadClassMetadata, $tablePrefix);
-		
-//		$cacheDriver = $services->get('doctrine.cache.memcache');
-//		$cacheDriver->setManageCacheIds(true);
-		
-        $app     = $e->getParam('application');
-        $sm      = $app->getServiceManager();
+		$app = $e->getParam('application');
+		$sm = $app->getServiceManager();
 		$evm = $sm->get('doctrine.eventmanager.orm_default');
 
 		$cache = $sm->get('doctrine.cache.memcache');
 		$annotationReader = new \Doctrine\Common\Annotations\AnnotationReader;
 		$cachedAnnotationReader = new \Doctrine\Common\Annotations\CachedReader(
-			$annotationReader,
-			$cache
+						$annotationReader,
+						$cache
 		);
-		
+
 		$sluggableListener = new \Gedmo\Sluggable\SluggableListener;
 		$sluggableListener->setAnnotationReader($cachedAnnotationReader);
 		$evm->addEventSubscriber($sluggableListener);
@@ -92,8 +77,7 @@ class Module extends xModule
 			)
 		);
 	}
-	
-	
+
 	public function getViewHelperConfig()
 	{
 		return array(
@@ -125,4 +109,5 @@ class Module extends xModule
 			),
 		);
 	}
+
 }
