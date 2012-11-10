@@ -106,6 +106,10 @@ class Module extends xModule
 				{
 					return new \Dx\View\Helper\Sidebar();
 				},
+				'dxPageMeta' => function($sm)
+				{
+					return new \Dx\View\Helper\PageMeta();
+				},
 			),
 		);
 	}
