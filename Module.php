@@ -73,6 +73,26 @@ class Module extends xModule
 					$memcache = new \Memcache();
 					$memcache->connect('localhost', 11211);
 					return $memcache;
+				},
+				'dx_cache' => function($sm)
+				{
+					$fileOptions = array(
+						'cache_dir' => \Dx::getBaseDir('app') . 'var/cache'
+					);
+					$fileCache = \Zend\Cache\StorageFactory::factory(array(
+								'adapter' => array(
+									'name' => 'filesystem',
+									'options' => $fileOptions
+								),
+								'plugins' => array(
+									'ExceptionHandler' => array(
+										'throw_exceptions' => false
+									),
+									'Serializer'
+								)
+							));
+					$memCache = $fileCache;
+					return new \Dx\Cache($fileCache, $memCache);
 				}
 			)
 		);
