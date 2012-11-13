@@ -130,6 +130,10 @@ class Module extends xModule
 				{
 					return new \Dx\View\Helper\PageMeta();
 				},
+				'dxAlert' => function($sm)
+				{
+					return new \Dx\View\Helper\Alert();
+				},
 			),
 		);
 	}
