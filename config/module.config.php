@@ -9,17 +9,6 @@
  */
 $arr = array(
 	'doctrine' => array(
-        'connection' => array(
-            'orm_default' => array(
-                'params' => array(
-                    'host'     => 'localhost',
-                    'port'     => '3306',
-                    'user'     => 'root',
-                    'password' => 'onedge',
-                    'dbname'   => 'dx',
-                )
-            ),
-        ),
 		'configuration' => array(
 			'orm_default' => array(
 //				'metadata_cache' => 'filesystem',
@@ -91,7 +80,7 @@ $arr = array(
 			'dxapp/index/index' => \Dx::getBaseDir('app') . 'design/front/' . \Dx\Config::getAppTheme() . '/view/application/index/index.phtml',
 		),
 		'template_path_stack' => array(
-			\Dx::getBaseDir('app') . 'design/' . \Dx::getSection() . '/default/partials',
+			\Dx::getBaseDir('app') . 'design/' . \Dx::getSection() . '/' . \Dx\Config::getAppTheme() . '/partials',
 		),
 	),
 	'assetic_configuration' => array(
