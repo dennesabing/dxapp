@@ -68,6 +68,11 @@ class Module extends xModule
 	{
 		return array(
 			'factories' => array(
+				'dxapp_module_options' => function ($sm)
+				{
+					$config = $sm->get('Config');
+					return new \Dxapp\Options\ModuleOptions(isset($config['dxapp']) ? $config['dxapp'] : array());
+				},
 				'dx_memcache' => function($sm)
 				{
 					$memcache = new \Memcache();
@@ -104,35 +109,41 @@ class Module extends xModule
 			'factories' => array(
 				'dxConfig' => function($sm)
 				{
-					return new \Dx\View\Helper\Config();
+					return new \Dxapp\View\Helper\Config();
 				},
 				'dxEscapeSlash' => function($sm)
 				{
-					return new \Dx\View\Helper\EscapeSlash();
+					return new \Dxapp\View\Helper\EscapeSlash();
 				},
 				'dxUser' => function($sm)
 				{
-					return new \Dx\View\Helper\User();
+					return new \Dxapp\View\Helper\User();
 				},
 				'dxBreadcrumb' => function($sm)
 				{
-					return new \Dx\View\Helper\Breadcrumb();
+					return new \Dxapp\View\Helper\Breadcrumb();
 				},
 				'dxHtml' => function($sm)
 				{
-					return new \Dx\View\Helper\Html();
+					return new \Dxapp\View\Helper\Html();
 				},
 				'dxSidebar' => function($sm)
 				{
-					return new \Dx\View\Helper\Sidebar();
+					return new \Dxapp\View\Helper\Sidebar();
 				},
 				'dxPageMeta' => function($sm)
 				{
-					return new \Dx\View\Helper\PageMeta();
+					return new \Dxapp\View\Helper\PageMeta();
 				},
 				'dxAlert' => function($sm)
 				{
-					return new \Dx\View\Helper\Alert();
+					return new \Dxapp\View\Helper\Alert();
+				},
+				'dxModuleOptions' => function($sm)
+				{
+					$moduleOptions = new \Dxapp\View\Helper\ModuleOptions();
+					$moduleOptions->setServiceManager($sm);
+					return $moduleOptions;
 				},
 			),
 		);
