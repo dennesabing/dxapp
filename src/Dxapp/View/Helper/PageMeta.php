@@ -7,7 +7,7 @@
  */
 namespace Dxapp\View\Helper;
 
-use Dx\View\AbstractHelper;
+use Dxapp\View\AbstractHelper;
 
 class PageMeta extends AbstractHelper
 {

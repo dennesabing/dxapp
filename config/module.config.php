@@ -22,7 +22,7 @@ $arr = array(
 				'directory' => 'var/cache/DoctrineORMModule',
 			),
 			'memcache' => array(
-				'instance' => 'dx_memcache',
+				'instance' => 'dxMemcache',
 			),
 		)
 	),
@@ -63,6 +63,7 @@ $arr = array(
     'controller_plugins' => array(
         'invokables' => array(
             'dxController' => 'Dxapp\Controller\Plugin\DxController',
+            'layout' => 'Dxapp\Controller\Plugin\Layout',
         ),
     ),
 	'assetic_configuration' => array(

@@ -16,7 +16,7 @@
 
 namespace Dxapp\View\Helper;
 
-use Dx\View\AbstractHelper;
+use Dxapp\View\AbstractHelper;
 
 class Alert extends AbstractHelper
 {
@@ -36,10 +36,16 @@ class Alert extends AbstractHelper
 	 * Add a msg to alerts
 	 * @param string $msg The alert to append
 	 * @param string $type The type of alert
+	 * @param string $pos Where you want to appear the Alert.
+	 * @TODO $pos
 	 * @return \Dx\View\Helper\Alert 
 	 */
-	public function add($msg, $type)
+	public function add($msg, $type, $pos = NULL)
 	{
+		if($pos != NULL)
+		{
+			
+		}
 		$this->alerts[$type][] = $msg;
 		return $this;
 	}
@@ -47,33 +53,39 @@ class Alert extends AbstractHelper
 	/**
 	 * Add an error alert
 	 * @param string $msg
+	 * @param string $pos Where you want to appear the Alert.
+	 * @TODO $pos
 	 * @return \Dx\View\Helper\Alert 
 	 */
-	public function addError($msg)
+	public function addError($msg, $pos = NULL)
 	{
-		$this->add($msg, 'error');
+		$this->add($msg, 'error', $pos);
 		return $this;
 	}
 
 	/**
 	 * Add a success alert
 	 * @param string $msg
+	 * @param string $pos Where you want to appear the Alert.
+	 * @TODO $pos
 	 * @return \Dx\View\Helper\Alert 
 	 */
-	public function addSuccess($msg)
+	public function addSuccess($msg, $pos = NULL)
 	{
-		$this->add($msg, 'success');
+		$this->add($msg, 'success', $pos);
 		return $this;
 	}
 
 	/**
 	 * Add an info alert
 	 * @param string $msg
+	 * @param string $pos Where you want to appear the Alert.
+	 * @TODO $pos
 	 * @return \Dx\View\Helper\Alert 
 	 */
-	public function addInfo($msg)
+	public function addInfo($msg, $pos = NULL)
 	{
-		$this->add($msg, 'info');
+		$this->add($msg, 'info', $pos);
 		return $this;
 	}
 

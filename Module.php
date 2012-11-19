@@ -2,19 +2,32 @@
 
 namespace Dxapp;
 
-use Dx\Module as xModule;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\ClassLoader as DoctrineClassLoader;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Module\Manager,
 	Zend\EventManager\StaticEventManager,
+	Zend\Mvc\MvcEvent,
 	Zend\EventManager\EventInterface as Event;
 
-class Module extends xModule
+class Module
 {
 
-	public $namespace = __NAMESPACE__;
-	public $dir = __DIR__;
+	public function getConfig()
+	{
+		return include __DIR__ . '/config/module.config.php';
+	}
+
+	public function getAutoloaderConfig()
+	{
+		return array(
+			'Zend\Loader\StandardAutoloader' => array(
+				'namespaces' => array(
+					__NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+				),
+			),
+		);
+	}
 
 	public function init()
 	{
@@ -27,12 +40,8 @@ class Module extends xModule
 	{
 		$application = $e->getApplication();
 		$services = $application->getServiceManager();
-		$services->get('translator');
 		$eventManager = $application->getEventManager();
-		$routeListener = new \Dx\Mvc\Listener\Route();
-		$routeListener->attach($eventManager);
-		$moduleRouteListener = new ModuleRouteListener();
-		$moduleRouteListener->attach($eventManager);
+		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'setApplicationSection'));
 
 		$app = $e->getParam('application');
 		$sm = $app->getServiceManager();
@@ -64,6 +73,30 @@ class Module extends xModule
 		$evm->addEventSubscriber($translatableListener);
 	}
 
+	/**
+	 * Set the Application section based on route.
+	 * Application section can be back or front
+	 *
+	 * @param  MvcEvent $e
+	 * @return void
+	 */
+	public function setApplicationSection(MvcEvent $e)
+	{
+		$app = $e->getParam('application');
+		$sm = $app->getServiceManager();
+		$config = $sm->get('dxapp_module_options');
+		$match = $e->getRouteMatch();
+		if (!$match instanceof RouteMatch || 0 !== strpos($match->getMatchedRouteName(), $config->getApplicationPrefix() . 'admin'))
+		{
+			$section = 'front';
+		}
+		else
+		{
+			$section = 'back';
+		}
+		$config->setApplicationSection($section);
+	}
+
 	function getServiceConfig()
 	{
 		return array(
@@ -73,18 +106,19 @@ class Module extends xModule
 					$config = $sm->get('Config');
 					return new \Dxapp\Options\ModuleOptions(isset($config['dxapp']) ? $config['dxapp'] : array());
 				},
-				'dx_memcache' => function($sm)
+				'dxMemcache' => function($sm)
 				{
 					$memcache = new \Memcache();
 					$memcache->connect('localhost', 11211);
 					return $memcache;
 				},
-				'dx_cache' => function($sm)
+				'dxFilecache' => function($sm)
 				{
+					$config = $sm->get('dxapp_module_options');
 					$fileOptions = array(
-						'cache_dir' => \Dx::getBaseDir('app') . 'var/cache'
+						'cache_dir' => $config->getApplicationPath() . 'var/cache'
 					);
-					$fileCache = \Zend\Cache\StorageFactory::factory(array(
+					return \Zend\Cache\StorageFactory::factory(array(
 								'adapter' => array(
 									'name' => 'filesystem',
 									'options' => $fileOptions
@@ -96,8 +130,10 @@ class Module extends xModule
 									'Serializer'
 								)
 							));
-					$memCache = $fileCache;
-					return new \Dx\Cache($fileCache, $memCache);
+				},
+				'dxSession' => function($sm)
+				{
+                    return new \Zend\Session\Container('dxbuysell');
 				}
 			)
 		);
@@ -109,11 +145,9 @@ class Module extends xModule
 			'factories' => array(
 				'dxConfig' => function($sm)
 				{
-					return new \Dxapp\View\Helper\Config();
-				},
-				'dxEscapeSlash' => function($sm)
-				{
-					return new \Dxapp\View\Helper\EscapeSlash();
+					$config = new \Dxapp\View\Helper\Config();
+					$config->setServiceManager($sm);
+					return $config;
 				},
 				'dxUser' => function($sm)
 				{
@@ -125,7 +159,11 @@ class Module extends xModule
 				},
 				'dxHtml' => function($sm)
 				{
-					return new \Dxapp\View\Helper\Html();
+					$config = $sm->get('dxConfig')->getOptions();
+					$html = new \Dxapp\View\Helper\Html();
+					$html->setUseAbsoluteUrl($config->getUseAbsoluteUrl());
+					$html->setUseSecureUrl($config->getUseSecureUrl());
+					return $html;
 				},
 				'dxSidebar' => function($sm)
 				{
@@ -138,12 +176,6 @@ class Module extends xModule
 				'dxAlert' => function($sm)
 				{
 					return new \Dxapp\View\Helper\Alert();
-				},
-				'dxModuleOptions' => function($sm)
-				{
-					$moduleOptions = new \Dxapp\View\Helper\ModuleOptions();
-					$moduleOptions->setServiceManager($sm);
-					return $moduleOptions;
 				},
 			),
 		);

@@ -19,8 +19,7 @@
 
 namespace Dxapp\View\Helper;
 
-use Dx\Config as DxConfig;
-use Dx\View\AbstractHelper;
+use Dxapp\View\AbstractHelper;
 
 class Breadcrumb extends AbstractHelper
 {
@@ -30,7 +29,7 @@ class Breadcrumb extends AbstractHelper
 
 	public function __invoke()
 	{
-		$this->add($this->getView()->dxModuleOptions()->getOptions('dxapp')->getBreadcrumbMain());
+		$this->add($this->getView()->dxConfig()->getOptions()->getBreadcrumbMain());
 		return $this;
 	}
 

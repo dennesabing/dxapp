@@ -14,7 +14,7 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 * @var ServiceManager
 	 */
 	protected $serviceManager;
-	
+
 	/**
 	 * The Module Options
 	 * @var Zend\Stdlib\AbstractOptions
@@ -49,7 +49,7 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 */
 	public function getSession($modulePrefix = NULL)
 	{
-		if($modulePrefix !== NULL)
+		if ($modulePrefix !== NULL)
 		{
 			if ($this->getServiceManager()->get($modulePrefix . '_session') instanceof \Zend\Session\Container)
 			{
@@ -84,4 +84,11 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 		return $this;
 	}
 	
+	/**
+	 * set Status code NotFound or 404 
+	 */
+	public function notFound()
+	{
+		$this->getController()->getResponse()->setStatusCode(404);
+	}
 }

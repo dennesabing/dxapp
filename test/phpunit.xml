@@ -1,0 +1,7 @@
+<phpunit bootstrap="bootstrap.php" backupGlobals="FALSE" colors="TRUE">
+    <testsuites>
+        <testsuite name="Dxapp Test">
+            <directory>./DxappBaseTest</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

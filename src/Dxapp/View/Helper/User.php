@@ -9,8 +9,7 @@
 
 namespace Dxapp\View\Helper;
 
-use Dx\Config as DxConfig;
-use Dx\View\AbstractHelper;
+use Dxapp\View\AbstractHelper;
 
 class User extends AbstractHelper
 {

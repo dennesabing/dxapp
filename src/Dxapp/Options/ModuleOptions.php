@@ -1,16 +1,94 @@
 <?php
 
-namespace DxApp\Options;
+namespace Dxapp\Options;
 
 use Zend\Stdlib\AbstractOptions;
 
 class ModuleOptions extends AbstractOptions
 {
+
+	/**
+	 * The Application prefix
+	 * Use to prefix all base folders
+	 * Also use to uniquely identify this application among other applications
+	 * @var string
+	 */
+	protected $applicationPrefix = 'dx';
+
+	/**
+	 * The Current section of the application back or front
+	 * @var string
+	 */
+	protected $applicationSection = 'front';
+
+	/**
+	 * The Site Domain
+	 * @var string
+	 */
+	protected $domain = NULL;
+
+	/**
+	 * The base url
+	 * @var string
+	 */
+	protected $baseUrl = '/';
+
+	/**
+	 * If to use Absolute URL on all links sitewide
+	 * @var boolean
+	 */
+	protected $useAbsoluteUrl = FALSE;
+
+	/**
+	 * If to use Secured URL on all links sitewide
+	 * @var boolean
+	 */
+	protected $useSecureUrl = FALSE;
+	
+	/**
+	 * The Frontend theme
+	 * @var string
+	 */
+	protected $frontendTheme = 'default';
+
+	/**
+	 * The front theme scheme
+	 * @TODO Feature
+	 * @var string
+	 */
+	protected $frontendThemeScheme = 'default';
+
+	/**
+	 * The BackendTheme
+	 * @var string
+	 */
+	protected $backendTheme = 'default';
+
+	/**
+	 * The backend theme scheme
+	 * @TODO Feature
+	 * @var string
+	 */
+	protected $backendThemeScheme = 'default';
+
+	/**
+	 * Path to the Application Path
+	 * @var string
+	 */
+	protected $applicationPath = NULL;
+
+	/**
+	 * Path to the Public Accessible Folder
+	 * @var string
+	 */
+	protected $sitePath = NULL;
+
 	/**
 	 * Enable email sending
 	 * @var boolean
 	 */
 	protected $emailSending = TRUE;
+
 	/**
 	 * The Main breadcrumb
 	 * @var array
@@ -21,14 +99,392 @@ class ModuleOptions extends AbstractOptions
 			'url' => '/'
 		)
 	);
+
+	/**
+	 * The SiteWide DEfault maxRows
+	 * Can be set on a per module basis.
+	 * @var integer
+	 */
+	protected $defaultMaxRows = 15;
+
+	/**
+	 * The SiteWide defaultSorting
+	 * Can be set also on a per module basis.
+	 * @var string layout-maxrows-orderby-direction
+	 */
+	protected $defaultSorting = 'rows-15-pid-desc';
+
+	/**
+	 * The SiteWide DEfault layout
+	 * Can be set also on a per module basis.
+	 * @var string rows|grid
+	 */
+	protected $defaultLayout = 'rows';
+
+	/**
+	 * Common form type Layout based on \DluTwBootstrap\Form\FormUtil::FORM_TYPE_VERTICAL
+	 * @var string
+	 */
+	protected $formTypeLayout = 'vertical';
 	
+	/**
+	 * SEt the Form Type Layout
+	 * @param string $type
+	 * @return \Dxapp\Options\ModuleOptions 
+	 */
+	public function setFormTypeLayout($type)
+	{
+		$this->formTypeLayout = $type;
+		return $this;
+	}
+	
+	/**
+	 * GEt the form Type LAyout
+	 * @return type 
+	 */
+	public function getFormTypeLayout()
+	{
+		return $this->formTypeLayout;
+	}
+	
+	/**
+	 * Set if to use Absolute URL on all links sitewide
+	 * @param boolean $flag
+	 * @return \Dxapp\Options\ModuleOptions 
+	 */
+	public function setUseAbsoluteUrl($flag)
+	{
+		$this->useAbsoluteUrl = $flag;
+		return $this;
+	}
+
+	/**
+	 * Get if to use Absolute URL on all links sitewide
+	 * @return boolean
+	 */
+	public function getUseAbsoluteUrl()
+	{
+		return $this->useAbsoluteUrl;
+	}
+
+	/**
+	 * Set if to use secured url on all links sitewide
+	 * @param boolean $flag
+	 * @return \Dxapp\Options\ModuleOptions 
+	 */
+	public function setUseSecureUrl($flag)
+	{
+		$this->useSecureUrl = $flag;
+		return $this;
+	}
+
+	/**
+	 * GEt if to use secure url on all links sitewide
+	 * @return boolean
+	 */
+	public function getUseSecureUrl()
+	{
+		return $this->useSecureUrl;
+	}
+
+	/**
+	 * Get the Application Environment
+	 * @return string  
+	 */
+	public function getEnvironment()
+	{
+		return APP_ENV;
+	}
+
+	/**
+	 * Is the Application in Development Mode?
+	 * @return boolean 
+	 */
+	public function inDevelopment()
+	{
+		if ($this->getEnvironment() == 'development' || $this->getEnvironment() == 'staging')
+		{
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	/**
+	 * Set the default maxrows
+	 * @param integer $maxRows The number of rows to display
+	 * @return \DxCdRace\Options\Module 
+	 */
+	public function setDefaultMaxRows($maxRows)
+	{
+		$this->defaultMaxRows = $maxRows;
+		return $this;
+	}
+
+	/**
+	 * Return the Default MaxRows
+	 * @return integer
+	 */
+	public function getDefaultMaxRows()
+	{
+		return $this->defaultMaxRows;
+	}
+
+	/**
+	 * Set Default Sorting
+	 * @param string $sorting e.g. layout-maxrows-date-desc
+	 * @return \DxCdRace\Options\Module 
+	 */
+	public function setDefaultSorting($sorting)
+	{
+		$this->defaultSorting = $sorting;
+		return $this;
+	}
+
+	/**
+	 * Return the default sorting
+	 * @return string
+	 */
+	public function getDefaultSorting()
+	{
+		return $this->defaultSorting;
+	}
+
+	/**
+	 * Set the Default Layout
+	 * @param string $layout e.g. rows or grid
+	 * @return \DxCdRace\Options\Module 
+	 */
+	public function setDefaultLayout($layout)
+	{
+		$this->defaultLayout = $layout;
+		return $this;
+	}
+
+	/**
+	 * Return the default Layout
+	 * @return string
+	 */
+	public function getDefaultLayout()
+	{
+		return $this->defaultLayout();
+	}
+
 	/**
 	 * The Main route to redirect user if a logged-in user goes to a non-logged-in pages.
 	 * @var string
 	 */
 	protected $routeMain = 'dx-user-account';
-	
-	
+
+	/**
+	 * SEt the Application SEction back or front
+	 * @param string $section The Appplication section
+	 * @return \DxApp\Options\ModuleOptions 
+	 */
+	public function setApplicationSection($section)
+	{
+		if ($section == 'admin')
+		{
+			$section = 'back';
+		}
+		$this->applicationSection = $section;
+		return $this;
+	}
+
+	/**
+	 * GEt the application section
+	 * @return string
+	 */
+	public function getApplicationSection()
+	{
+		return $this->applicationSection;
+	}
+
+	/**
+	 * Set the frontend theme schem
+	 * @param string $scheme
+	 * @return \DxApp\Options\ModuleOptions 
+	 */
+	public function setFrontendThemeScheme($scheme)
+	{
+		$this->frontendThemeScheme = $scheme;
+		return $this;
+	}
+
+	/**
+	 * Return the frontend theme scheme
+	 * @return string
+	 */
+	public function getFrontendThemeScheme()
+	{
+		return $this->frontendThemeScheme;
+	}
+
+	/**
+	 * Set the backend theme schem
+	 * @param string $scheme
+	 * @return \DxApp\Options\ModuleOptions 
+	 */
+	public function setBackendThemeScheme($scheme)
+	{
+		$this->backendThemeScheme = $scheme;
+		return $this;
+	}
+
+	/**
+	 * Return the Backend theme scheme
+	 * @return string
+	 */
+	public function getBackendThemeScheme()
+	{
+		return $this->backendThemeScheme;
+	}
+
+	/**
+	 * Set the frontEnd theme
+	 * @param string $theme The frontend Theme
+	 * @return \DxApp\Options\ModuleOptions 
+	 */
+	public function setFrontendTheme($theme)
+	{
+		$this->frontendTheme = $theme;
+		return $this;
+	}
+
+	/**
+	 * Get the frontend theme
+	 * @return string
+	 */
+	public function getFrontendTheme()
+	{
+		return $this->frontendTheme;
+	}
+
+	/**
+	 * Set the backend theme
+	 * @param string $theme The frontend Theme
+	 * @return \DxApp\Options\ModuleOptions 
+	 */
+	public function setBackendTheme($theme)
+	{
+		$this->backendTheme = $theme;
+		return $this;
+	}
+
+	/**
+	 * Get the backend theme
+	 * @return string
+	 */
+	public function getBackendTheme()
+	{
+		return $this->backendTheme;
+	}
+
+	/**
+	 * SEt the Application Prefix
+	 * @param string $prefix The prefix that will uniquely identify this application
+	 * @return \DxApp\Options\ModuleOptions 
+	 */
+	public function setApplicationPrefix($prefix)
+	{
+		$this->applicationPrefix = $prefix;
+		return $this;
+	}
+
+	/**
+	 * REturn the Application Prefix
+	 * @return string
+	 */
+	public function getApplicationPrefix()
+	{
+		return $this->applicationPrefix;
+	}
+
+	/**
+	 * Set the Base Url
+	 * @param string $url The Base Url e.g. /
+	 * @return \DxApp\Options\ModuleOptions 
+	 */
+	public function setBaseUrl($url)
+	{
+		$this->baseUrl = $url;
+		return $this;
+	}
+
+	/**
+	 * REturn the base Url
+	 * @return string
+	 */
+	public function getBaseUrl()
+	{
+		return $this->baseUrl;
+	}
+
+	/**
+	 * SEt the Domain
+	 * @param string $domain The website domain
+	 * @return \DxApp\Options\ModuleOptions 
+	 */
+	public function setDomain($domain)
+	{
+		$this->domain = $domain;
+		return $this;
+	}
+
+	/**
+	 * Return the website domain
+	 * @return string
+	 */
+	public function getDomain()
+	{
+		return $this->domain;
+	}
+
+	/**
+	 * SEt the Application Path
+	 * @param string $path The Path to the Application Folder
+	 * @return \DxApp\Options\ModuleOptions 
+	 */
+	public function setApplicationPath($path)
+	{
+		if (\Dx\File::checkDir($path))
+		{
+			$this->applicationPath = $path;
+		}
+		return $this;
+	}
+
+	/**
+	 * Get the Application Path
+	 * @return string 
+	 */
+	public function getApplicationPath()
+	{
+		return $this->applicationPath;
+	}
+
+	/**
+	 * Set the Site Public Folder
+	 * @param string $path Path to the Public accessible folder
+	 * @return \DxApp\Options\ModuleOptions 
+	 */
+	public function setSitePath($path)
+	{
+		if (\Dx\File::checkDir($path))
+		{
+			$this->sitePath = $path;
+		}
+		return $this;
+	}
+
+	/**
+	 * Get the Public accessible folder
+	 * @return string
+	 */
+	public function getSitePath()
+	{
+		return $this->sitePath;
+	}
+
 	/**
 	 * Set the Main route 
 	 * @param string $route
@@ -39,7 +495,7 @@ class ModuleOptions extends AbstractOptions
 		$this->routeMain = $route;
 		return $this;
 	}
-	
+
 	/**
 	 * Get the main route
 	 * @return string
@@ -48,7 +504,7 @@ class ModuleOptions extends AbstractOptions
 	{
 		return $this->routeMain;
 	}
-	
+
 	/**
 	 * Enable/Disable email sending
 	 * @param boolean $flag
@@ -59,7 +515,7 @@ class ModuleOptions extends AbstractOptions
 		$this->emailSending = $flag;
 		return $this;
 	}
-	
+
 	/**
 	 * Return email sending status
 	 * @return boolean
@@ -68,7 +524,7 @@ class ModuleOptions extends AbstractOptions
 	{
 		return $this->emailSending;
 	}
-	
+
 	/**
 	 * Set the main breadcrumb
 	 * @param array $crumb
@@ -79,7 +535,7 @@ class ModuleOptions extends AbstractOptions
 		$this->breadcrumbMain = $crumb;
 		return $this;
 	}
-	
+
 	/**
 	 * Get the main Breadcrumb
 	 * @return type 
@@ -88,4 +544,5 @@ class ModuleOptions extends AbstractOptions
 	{
 		return $this->breadcrumbMain;
 	}
+
 }
