@@ -12,9 +12,16 @@
 namespace Dxapp\Form;
 
 use Zend\Form\Form as ZendForm;
+use Dxapp\InputFilter\ProvidesEventsInputFilter;
 
 class Base extends ZendForm
 {
+
+	/**
+	 * The service manager
+	 * @var type 
+	 */
+	protected $serviceManager = NULL;
 
 	/**
 	 * The Module Options
@@ -33,41 +40,6 @@ class Base extends ZendForm
 	 * @var string|array
 	 */
 	protected $xmlForm = NULL;
-
-	public function setModuleOptions($moduleOptions)
-	{
-		$this->moduleOptions = $moduleOptions;
-		return $this;
-	}
-
-	/**
-	 * Return the Module Options
-	 * @return array
-	 */
-	public function getModuleOptions()
-	{
-		return $this->moduleOptions;
-	}
-
-	/**
-	 * Set the XML Form filename or array
-	 * @param string|array $xmlForm Array of Form information or XML Filename
-	 * @return \Dx\Form 
-	 */
-	public function setXmlForm($xmlForm)
-	{
-		$this->xmlForm = $xmlForm;
-		return $this;
-	}
-
-	/**
-	 * Get the XML Filename or Array
-	 * @return string|array
-	 */
-	public function getXmlForm()
-	{
-		return $this->xmlForm;
-	}
 
 	/**
 	 * Form Setup from XML
@@ -104,39 +76,37 @@ class Base extends ZendForm
 			{
 				$this->setDisplayOptions($xml['form']['displayOptions']);
 			}
-			if (isset($xml['form']['inputFilter']))
-			{
-				$this->filterFromXml($xml['form']['inputFilters']);
-			}
 			if (isset($xml['form']['displayOptions']))
 			{
 				$this->setDisplayOptions($xml['form']['displayOptions']);
 			}
-			if (isset($xml['form']['fieldset']) && !empty($xml['form']['fieldset']))
+
+			if (isset($xml['form']['fieldsets']) && !empty($xml['form']['fieldsets']))
 			{
-				foreach ($xml['form']['fieldset'] as $key => $fs)
+				foreach ($xml['form']['fieldsets'] as $fsName => $fs)
 				{
-					if (isset($fs['name']))
-					{
-						$fieldsets = $this->orderElement($fieldsets, $fs);
-					}
+					$fieldsets = $this->orderElement($fsName, $fieldsets, $fs);
 				}
 			}
-			if (isset($xml['form']['element']) && !empty($xml['form']['element']))
+
+
+
+			if (isset($xml['form']['elements']) && !empty($xml['form']['elements']))
 			{
-				foreach ($xml['form']['element'] as $ele)
+				foreach ($xml['form']['elements'] as $eleName => $ele)
 				{
 					if (isset($ele['fieldset']) && !empty($ele['fieldset']))
 					{
+						if(!isset($ele['name']))
+						{
+							$ele['name'] = $eleName;
+						}
 						$eleArr = array('spec' => $ele);
 						$fieldsets[$ele['fieldset']]['elements'][] = $eleArr;
 					}
 					else
 					{
-						if (isset($ele['name']))
-						{
-							$elements = $this->orderElement($elements, $ele);
-						}
+						$elements = $this->orderElement($eleName, $elements, $ele);
 					}
 				}
 			}
@@ -178,52 +148,65 @@ class Base extends ZendForm
 		}
 	}
 
-/**
-	 * Form Setup from XML
-	 * @param string|array $xmlFile
-	 * @return type 
+	/**
+	 * Set service manager
+	 * @param type $sm
+	 * @return \Dxapp\Form\Base
 	 */
-	public function filterFromXml($xml = NULL)
+	public function setServiceManager($sm)
 	{
-		if (!empty($xml))
-		{
-			$this->setXml($xml);
-		}
-		$xml = $this->getXml();
-		if (!is_array($xml))
-		{
-			$xml = \Dx\Reader\Xml::toArray($xml);
-		}
-
-		if ($xml && is_array($xml) && !empty($xml))
-		{
-			if (isset($xml['fieldset']) && !empty($xml['fieldset']))
-			{
-				foreach ($xml as $f)
-				{
-					$filter = new InputFilter();
-					$this->add($filter);
-				}
-			}
-			else
-			{
-				foreach ($xml as $f)
-				{
-					$this->add($f);
-				}
-			}
-		}
+		$this->serviceManager = $sm;
+		return $this;
 	}
-	
+
+	public function setModuleOptions($moduleOptions)
+	{
+		$this->moduleOptions = $moduleOptions;
+		return $this;
+	}
+
+	/**
+	 * Return the Module Options
+	 * @return array
+	 */
+	public function getModuleOptions()
+	{
+		return $this->moduleOptions;
+	}
+
+	/**
+	 * Set the XML Form filename or array
+	 * @param string|array $xmlForm Array of Form information or XML Filename
+	 * @return \Dx\Form 
+	 */
+	public function setXmlForm($xmlForm)
+	{
+		$this->xmlForm = $xmlForm;
+		return $this;
+	}
+
+	/**
+	 * Get the XML Filename or Array
+	 * @return string|array
+	 */
+	public function getXmlForm()
+	{
+		return $this->xmlForm;
+	}
+
 	/**
 	 * Position an Element
 	 * @param array $elements Array of Elements
 	 * @param array $ele The Element to insert
 	 * @return array The new Array of Elements
 	 */
-	public function orderElement($elements, $ele)
+	public function orderElement($name, $elements, $ele)
 	{
 		$positions = array('after', 'before');
+		if(!isset($ele['name']))
+		{
+			$ele['name'] = $name;
+		}
 		foreach ($positions as $pos)
 		{
 			if (isset($ele[$pos]))
@@ -232,12 +215,12 @@ class Base extends ZendForm
 				{
 					$keyPos = $ele[$pos];
 					unset($ele[$pos]);
-					$elements = \Dx\ArrayManager::array_insert($elements, $keyPos, array($ele['name'] => $ele), $pos);
+					$elements = \Dx\ArrayManager::array_insert($elements, $keyPos, array($name => $ele), $pos);
 					return $elements;
 				}
 			}
 		}
-		$elements[$ele['name']] = $ele;
+		$elements[$name] = $ele;
 		return $elements;
 	}
 
