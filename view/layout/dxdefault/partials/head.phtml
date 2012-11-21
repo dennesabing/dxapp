@@ -1,0 +1,14 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php echo $this->headTitle($this->title) ?>
+<?php echo $this->plugin('HeadMeta');?>
+<link rel="shortcut icon" href="<?php echo $this->dxHtml()->getImageUrl('dx/ico/favicon.ico', FALSE) ?>">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo $this->dxHtml()->getImageUrl('dx/ico/apple-touch-icon-144-precomposed.png', FALSE) ?>">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?php echo $this->dxHtml()->getImageUrl('dx/ico/apple-touch-icon-114-precomposed.png', FALSE) ?>">
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo $this->dxHtml()->getImageUrl('dx/ico/apple-touch-icon-72-precomposed.png', FALSE) ?>">
+<link rel="apple-touch-icon-precomposed" href="<?php echo $this->dxHtml()->getImageUrl('dx/ico/apple-touch-icon-57-precomposed.png', FALSE) ?>">
+<?php echo $this->plugin('HeadLink'); ?>
+<link href="<?php echo $this->dxHtml()->getAssetUrl('css/dx.css', FALSE)?>" media="screen" rel="stylesheet" type="text/css">
+<?php echo $this->plugin('HeadStyle');?>
+<script type="text/javascript" src="<?php echo $this->dxHtml()->getAssetUrl('js/dx.js')?>"></script>
+<?php echo $this->plugin('HeadScript');?>

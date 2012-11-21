@@ -72,7 +72,19 @@ class Html extends AbstractHelper
 	{
 		return $this->bodyClass;
 	}
-
+	
+	/**
+	 * Get asset URL
+	 * @param mixed string|array $file
+	 * @param boolean $theme Get url relative to the theme or relative to the doc root
+	 * 
+	 * @return string the URL
+	 */
+	public function getAssetUrl($asset)
+	{
+		return $this->getBaseUrl('assets') . '/' . $asset;
+	}
+	
 	/**
 	 * Get the URL of a css file
 	 * @param mixed string|array $file
@@ -301,6 +313,18 @@ class Html extends AbstractHelper
 	public function getTitle()
 	{
 		return $this->title;
+	}
+	
+	/**
+	 * Render a social login button
+	 * @param type $provider
+	 * @return type
+	 */
+	public function socialSignInButton($provider)
+	{
+		return '<a class="btn" href="'
+            . $this->view->url('scn-social-auth-user/login/provider', array('provider' => $provider))
+            . '">' . ucfirst($provider) . '</a>';
 	}
 
 }

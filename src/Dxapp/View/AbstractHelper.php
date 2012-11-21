@@ -40,6 +40,10 @@ abstract class AbstractHelper extends ZendAbstractHelper implements ServiceManag
 	{
 		if ($modulePrefix !== NULL)
 		{
+			if ($this->getServiceManager()->has($modulePrefix))
+			{
+				return $this->getServiceManager()->get($modulePrefix);
+			}
 			if ($this->getServiceManager()->has($modulePrefix . '_module_options'))
 			{
 				return $this->getServiceManager()->get($modulePrefix . '_module_options');

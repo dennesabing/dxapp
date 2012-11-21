@@ -39,13 +39,17 @@ class Module
 	public function onBootstrap(Event $e)
 	{
 		$application = $e->getApplication();
-		$services = $application->getServiceManager();
 		$eventManager = $application->getEventManager();
 		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'setApplicationSection'));
+		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'setLayout'));
+		$eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'setLayout'));
 
 		$app = $e->getParam('application');
 		$sm = $app->getServiceManager();
 		$evm = $sm->get('doctrine.eventmanager.orm_default');
+
+		$tablePrefix = new \Dx\Doctrine\Extension\TablePrefix('dx_');
+		$evm->addEventListener(\Doctrine\ORM\Events::loadClassMetadata, $tablePrefix);
 
 		$cache = $sm->get('doctrine.cache.memcache');
 		$annotationReader = new \Doctrine\Common\Annotations\AnnotationReader;
@@ -53,6 +57,7 @@ class Module
 						$annotationReader,
 						$cache
 		);
+
 
 		$sluggableListener = new \Gedmo\Sluggable\SluggableListener;
 		$sluggableListener->setAnnotationReader($cachedAnnotationReader);
@@ -71,6 +76,52 @@ class Module
 		$translatableListener->setTranslatableLocale('en');
 		$translatableListener->setDefaultLocale('en');
 		$evm->addEventSubscriber($translatableListener);
+	}
+
+	/**
+	 * Set the Layout based on themes-scheme
+	 */
+	public function setLayout(MvcEvent $e)
+	{
+		$app = $e->getParam('application');
+		$sm = $app->getServiceManager();
+		$config = $sm->get('dxapp_module_options');
+		$viewModel = $e->getViewModel();
+		$template = $viewModel->getTemplate();
+		$templateMaps = $config->getTemplateMaps();
+		$frontendTheme = $config->getFrontendTheme();
+		$viewResolver = $sm->get('ViewResolver');
+		$viewThemeResolver = new \Zend\View\Resolver\AggregateResolver();
+		if (isset($templateMaps['front'][$frontendTheme]['view_manager']['template_map']))
+		{
+			$templateMapResolver = new \Zend\View\Resolver\TemplateMapResolver(
+							$templateMaps['front'][$frontendTheme]['view_manager']['template_map']);
+			$viewThemeResolver->attach($templateMapResolver);
+		}
+		if (isset($templateMaps['front'][$frontendTheme]['view_manager']['template_path_stack']))
+		{
+			$pathResolver = new \Zend\View\Resolver\TemplatePathStack(
+							array('script_paths' => $templateMaps['front'][$frontendTheme]['view_manager']['template_path_stack'])
+			);
+			$defaultPathStack = $sm->get('ViewTemplatePathStack');
+			$pathResolver->setDefaultSuffix($defaultPathStack->getDefaultSuffix());
+			$viewThemeResolver->attach($pathResolver);
+		}
+		$viewResolver->attach($viewThemeResolver, 100);
+		if (isset($templateMaps['front'][$frontendTheme]['assetic_configuration']))
+		{
+			$themeAssets = $sm->get('dxThemeAssets');
+			$themeAssets->renderThemeAssets($frontendTheme, $templateMaps['front'][$frontendTheme]['assetic_configuration']);
+		}
+		$section = $config->getApplicationSection();
+		if ($section == 'admin')
+		{
+			if (FALSE === strpos($template, 'admin-'))
+			{
+				$template = str_replace('/', '/admin-', $template);
+			}
+		}
+		$viewModel->setTemplate($template);
 	}
 
 	/**
@@ -131,9 +182,22 @@ class Module
 								)
 							));
 				},
-				'dxSession' => function($sm)
+				'dxSession' => function()
 				{
-                    return new \Zend\Session\Container('dxbuysell');
+					return new \Zend\Session\Container('dxbuysell');
+				},
+				'dxThemeAssets' => function($sm)
+				{
+					$configuration = $sm->get('Configuration');
+
+					$asseticConfig = new \AsseticBundle\Configuration($configuration['assetic_configuration'], $sm);
+					$asseticAssetManager = $sm->get('Assetic\AssetManager');
+					$asseticFilterManager = $sm->get('Assetic\FilterManager');
+
+					$asseticService = new Service\ThemeAssets($asseticConfig);
+					$asseticService->setAssetManager($asseticAssetManager);
+					$asseticService->setFilterManager($asseticFilterManager);
+					return $asseticService;
 				}
 			)
 		);
@@ -169,9 +233,9 @@ class Module
 				{
 					return new \Dxapp\View\Helper\Sidebar();
 				},
-				'dxPageMeta' => function($sm)
+				'dxHead' => function($sm)
 				{
-					return new \Dxapp\View\Helper\PageMeta();
+					return new \Dxapp\View\Helper\Head();
 				},
 				'dxAlert' => function($sm)
 				{

@@ -1,0 +1,20 @@
+<?php echo $this->doctype(); ?>
+<html lang="en">
+    <head>
+		<?php echo $this->partial('head.phtml') ?>
+    </head>
+    <body>
+		<?php echo $this->partial('header.phtml') ?>
+		<?php echo $this->partial('nav.phtml') ?>
+		<div class="container">
+			<div class="row">
+				<?php echo $this->dxBreadcrumb()->render()?>
+				<?php echo $this->dxHtml()->getTitle() ? '<h1>' . $this->dxHtml()->getTitle() . '</h1>' : ''; ?>
+				<div class="span3"><?php echo $this->dxSidebar()->renderLeft() ?></div>
+				<div class="span9"><?php echo $this->content ?></div>
+			</div>
+			<?php echo $this->partial('footer.phtml') ?>
+		</div>
+		<?php echo $this->partial('foot.phtml') ?>
+    </body>
+</html>

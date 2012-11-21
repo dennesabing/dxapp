@@ -8,6 +8,16 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 $arr = array(
+	'view_manager' => array(
+		'display_not_found_reason' => TRUE,
+		'display_exceptions' => TRUE,
+		'doctype' => 'HTML5',
+		'not_found_template' => 'error/404',
+		'exception_template' => 'error/index',
+		'template_path_stack' => array(
+			'dxapp' => __DIR__ . '/../view',
+		),
+	),
 	'doctrine' => array(
 		'configuration' => array(
 			'orm_default' => array(
@@ -62,48 +72,20 @@ $arr = array(
 	),
     'controller_plugins' => array(
         'invokables' => array(
-            'dxController' => 'Dxapp\Controller\Plugin\DxController',
-            'layout' => 'Dxapp\Controller\Plugin\Layout',
+            'dxcontroller' => 'Dxapp\Controller\Plugin\DxController',
         ),
     ),
 	'assetic_configuration' => array(
-		'modules' => array(
-			'application' => array(
-				'root_path' => __DIR__ . '/../assets/',
-				'collections' => array(
-					'base_css' => array(
-						'assets' => array(
-							'css/bootstrap-responsive.min.css',
-							'css/bootstrap.min.css',
-							'css/dlu-tw-bootstrap.css',
-							'css/prettify.css',
-							'css/style.css',
-						),
-						'filters' => array(
-							'CssRewriteFilter' => array(
-								'name' => 'Assetic\Filter\CssRewriteFilter'
-							)
-						),
-						'options' => array(),
-					),
-					'base_js' => array(
-						'assets' => array(
-							'js/jquery-1.8.0.min.js',
-							'js/html5.js',
-							'js/bootstrap.min.js',
-							'js/prettify.js'
-						)
-					),
-					'base_images' => array(
-						'assets' => array(
-							'images/*.png',
-							'images/*.ico',
-						),
-						'options' => array(
-							'move_raw' => true,
-						)
-					),
-				),
+		'webPath' => PUBLIC_ROOT . '/' . APP_PREFIX . 'assets',
+		'cacheEnabled' => (APP_ENV == 'development' ? FALSE : TRUE),
+		'cachePath' => APP_ROOT . '/var/cache/assets',
+		'debug' => (APP_ENV == 'development' ? FALSE : FALSE),
+		'baseUrl' => '@zfBaseUrl/' . APP_PREFIX . 'assets',
+		'default' => array(
+			'assets' => array(
+			),
+			'options' => array(
+				'mixin' => true,
 			),
 		)
 	)

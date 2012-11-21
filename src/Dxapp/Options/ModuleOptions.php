@@ -8,6 +8,12 @@ class ModuleOptions extends AbstractOptions
 {
 
 	/**
+	 * The Project Name
+	 * @var type 
+	 */
+	protected $projectName = 'Dx Application';
+
+	/**
 	 * The Application prefix
 	 * Use to prefix all base folders
 	 * Also use to uniquely identify this application among other applications
@@ -44,32 +50,44 @@ class ModuleOptions extends AbstractOptions
 	 * @var boolean
 	 */
 	protected $useSecureUrl = FALSE;
-	
+
+	/**
+	 * The Template Maps
+	 * @var array
+	 */
+	protected $templateMaps = array();
+
+	/**
+	 * Location of theme folders
+	 * @var array
+	 */
+	protected $themeFolders = array();
+
 	/**
 	 * The Frontend theme
 	 * @var string
 	 */
-	protected $frontendTheme = 'default';
+	protected $frontendTheme = 'dxdefault';
 
 	/**
 	 * The front theme scheme
 	 * @TODO Feature
 	 * @var string
 	 */
-	protected $frontendThemeScheme = 'default';
+	protected $frontendThemeScheme = NULL;
 
 	/**
 	 * The BackendTheme
 	 * @var string
 	 */
-	protected $backendTheme = 'default';
+	protected $backendTheme = 'dxdefault';
 
 	/**
 	 * The backend theme scheme
 	 * @TODO Feature
 	 * @var string
 	 */
-	protected $backendThemeScheme = 'default';
+	protected $backendThemeScheme = NULL;
 
 	/**
 	 * Path to the Application Path
@@ -126,7 +144,91 @@ class ModuleOptions extends AbstractOptions
 	 * @var string
 	 */
 	protected $formTypeLayout = 'vertical';
+
+	/**
+	 * Set the themeFolders
+	 * @param type $themeFolder
+	 * @return \Dxapp\Options\ModuleOptions
+	 */
+	public function setThemeFolders($themeFolder)
+	{
+		if (file_exists($themeFolder))
+		{
+			$folder = new \DirectoryIterator($themeFolder);
+			while ($folder->valid())
+			{
+				$in = $folder->getFilename();
+				if ($in != '.' && $in != '..')
+				{
+					$path = $folder->getPath();
+					$configFile = $path . '/' . $in . '/theme.config.php';
+					if(file_exists($configFile))
+					{
+						$this->addTemplateMap($in, include_once $configFile);
+					}
+				}
+				$folder->next();
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Add a template map to maps of the themes
+	 * @param string $name The theme name
+	 * @param array $config theme config
+	 */
+	public function addTemplateMap($name, $config)
+	{
+		if(!array_key_exists($name, $this->getTemplateMaps()))
+		{
+			$this->templateMaps['front'][$name] = $config;
+		}
+	}
 	
+	/**
+	 * Return all the template maps
+	 * @return array
+	 */
+	public function getTemplateMaps()
+	{
+		return $this->templateMaps;
+	}
+	
+	/**
+	 * Return the Theme Folders
+	 * @return array
+	 */
+	public function getThemeFolders()
+	{
+		if (empty($this->themeFolders))
+		{
+			$this->setThemeFolders(__DIR__ . '../../../../view/layout');
+		}
+		return $this->themeFolders;
+	}
+
+	/**
+	 * Set the Project Name
+	 * @param string $projectName
+	 * @return \Dxapp\Options\ModuleOptions
+	 */
+	public function setProjectName($projectName)
+	{
+		$this->setThemeFolders(__DIR__ . '../../../../view/layout');
+		$this->projectName = $projectName;
+		return $this;
+	}
+
+	/**
+	 * Return the Project Name
+	 * @return string
+	 */
+	public function getProjectName()
+	{
+		return $this->projectName;
+	}
+
 	/**
 	 * SEt the Form Type Layout
 	 * @param string $type
@@ -137,7 +239,7 @@ class ModuleOptions extends AbstractOptions
 		$this->formTypeLayout = $type;
 		return $this;
 	}
-	
+
 	/**
 	 * GEt the form Type LAyout
 	 * @return type 
@@ -146,7 +248,7 @@ class ModuleOptions extends AbstractOptions
 	{
 		return $this->formTypeLayout;
 	}
-	
+
 	/**
 	 * Set if to use Absolute URL on all links sitewide
 	 * @param boolean $flag
@@ -396,7 +498,7 @@ class ModuleOptions extends AbstractOptions
 	 */
 	public function getApplicationPrefix()
 	{
-		return $this->applicationPrefix;
+		return APP_PREFIX;
 	}
 
 	/**

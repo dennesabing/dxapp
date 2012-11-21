@@ -4,6 +4,7 @@ namespace Dxapp\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\Authentication\AuthenticationService;
+use Zend\View\Model\ViewModel;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
@@ -68,8 +69,18 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 */
 	public function getModuleOptions($modulePrefix = NULL)
 	{
-		$this->setModuleOptions($this->getServiceManager()->get($modulePrefix . '_module_options'));
-		return $this->options;
+		if ($modulePrefix !== NULL)
+		{
+			if ($this->getServiceManager()->has($modulePrefix))
+			{
+				return $this->getServiceManager()->get($modulePrefix);
+			}
+			if ($this->getServiceManager()->has($modulePrefix . '_module_options'))
+			{
+				return $this->getServiceManager()->get($modulePrefix . '_module_options');
+			}
+		}
+		return $this->getServiceManager()->get('dxapp_module_options');
 	}
 
 	/**
@@ -90,5 +101,16 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	public function notFound()
 	{
 		$this->getController()->getResponse()->setStatusCode(404);
+	}
+	
+	/**
+	 * Add an error message
+	 * @param type $msg The Message
+	 * @param type $type The Type of Message
+	 */
+	public function addMessage($msg, $type = 'error', $session = TRUE)
+	{
+		$viewModel = new ViewModel();
+		$viewModel->dxAlert($msg);
 	}
 }
