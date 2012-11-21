@@ -5,7 +5,12 @@ namespace Dxapp\Service;
 use AsseticBundle\Service as AsseticService,
 	Assetic\Factory,
 	Assetic\Asset\AssetInterface,
-	Assetic\AssetWriter;
+	Assetic\AssetWriter,
+    Assetic\Factory,
+    Assetic\AssetWriter,
+    Assetic\Asset\AssetInterface,
+    Assetic\Asset\AssetCache,
+    Assetic\Cache\FilesystemCache;
 
 class ThemeAssets extends AsseticService
 {
