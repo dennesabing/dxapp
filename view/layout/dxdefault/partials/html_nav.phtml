@@ -1,0 +1,25 @@
+<?php
+
+$navs = $this->navs;
+$options = $this->options;
+$ulClass = array('nav', 'nav-tabs', 'nav-stacked');
+if(isset($options['ulClass']))
+{
+	$ulClass = array_merge($ulClass, $options['ulClass']);
+}
+?>
+
+<?php if(!empty($navs)):?>
+	<ul class="<?php echo implode(' ', $ulClass)?>">
+		<?php foreach($navs as $id => $link):?>
+			<?php 
+				$anchor = isset($link['anchor']) ? $link['anchor'] : 'NO ANCHOR';
+				$linkClass = isset($link['class']) ? $link['class'] : array();
+				$url = isset($link['url']) ? $link['url'] : '#';
+			?>
+			<li<?php echo (!empty($linkClass) ? 'class="' . implode(' ', $linkClass) . '"': '')?>>
+				<a href="<?php echo $url?>"><?php echo $anchor?></a>
+			</li>
+		<?php endforeach;?>
+	</ul>
+<?php endif;?>           

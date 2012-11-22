@@ -326,5 +326,19 @@ class Html extends AbstractHelper
             . $this->view->url('scn-social-auth-user/login/provider', array('provider' => $provider))
             . '">' . ucfirst($provider) . '</a>';
 	}
+	
+	/**
+	 * Create a navigation based on links ($navs) and $options
+	 * @param type $navs
+	 * @param type $options
+	 * return string The HTML
+	 */
+	public function nav($navs, $options)
+	{
+		return $this->view->partial('html_nav', array(
+			'navs' => $navs,
+			'options' => $options
+		));
+	}
 
 }
