@@ -26,6 +26,18 @@ class Alert extends AbstractHelper
 	 * @var array
 	 */
 	protected $alerts = array();
+	
+	/**
+	 * Alerts to be positioned
+	 * @var array
+	 */
+	protected $positionedAlerts = array();
+	
+	/**
+	 * Alerts that is to be passed to the next request
+	 * @var array
+	 */
+	protected $sessionedAlerts = array();
 
 	public function __invoke()
 	{
@@ -37,14 +49,19 @@ class Alert extends AbstractHelper
 	 * @param string $msg The alert to append
 	 * @param string $type The type of alert
 	 * @param string $pos Where you want to appear the Alert.
+	 * @param boolean $nextPage If to pass the alert to the next page
 	 * @TODO $pos
 	 * @return \Dx\View\Helper\Alert 
 	 */
-	public function add($msg, $type, $pos = NULL)
+	public function add($msg, $type, $pos = NULL, $nextPage = FALSE)
 	{
 		if($pos != NULL)
 		{
-			
+			$this->positionedAlerts[$pos][$type] = $msg;
+		}
+		if($nextPage)
+		{
+			$this->sessionedAlerts[$type] = $msg;
 		}
 		$this->alerts[$type][] = $msg;
 		return $this;
@@ -54,12 +71,27 @@ class Alert extends AbstractHelper
 	 * Add an error alert
 	 * @param string $msg
 	 * @param string $pos Where you want to appear the Alert.
+	 * @param boolean $nextPage If to pass the alert to the next page
 	 * @TODO $pos
 	 * @return \Dx\View\Helper\Alert 
 	 */
-	public function addError($msg, $pos = NULL)
+	public function addError($msg, $pos = NULL, $nextPage = FALSE)
 	{
-		$this->add($msg, 'error', $pos);
+		$this->add($msg, 'error', $pos, $nextPage);
+		return $this;
+	}
+
+	/**
+	 * Add a notice alert
+	 * @param string $msg
+	 * @param string $pos Where you want to appear the Alert.
+	 * @param boolean $nextPage If to pass the alert to the next page
+	 * @TODO $pos
+	 * @return \Dx\View\Helper\Alert 
+	 */
+	public function addNotice($msg, $pos = NULL, $nextPage = FALSE)
+	{
+		$this->add($msg, 'notice', $pos, $nextPage);
 		return $this;
 	}
 
@@ -67,12 +99,13 @@ class Alert extends AbstractHelper
 	 * Add a success alert
 	 * @param string $msg
 	 * @param string $pos Where you want to appear the Alert.
+	 * @param boolean $nextPage If to pass the alert to the next page
 	 * @TODO $pos
 	 * @return \Dx\View\Helper\Alert 
 	 */
-	public function addSuccess($msg, $pos = NULL)
+	public function addSuccess($msg, $pos = NULL, $nextPage = FALSE)
 	{
-		$this->add($msg, 'success', $pos);
+		$this->add($msg, 'success', $pos, $nextPage);
 		return $this;
 	}
 
@@ -80,12 +113,13 @@ class Alert extends AbstractHelper
 	 * Add an info alert
 	 * @param string $msg
 	 * @param string $pos Where you want to appear the Alert.
+	 * @param boolean $nextPage If to pass the alert to the next page
 	 * @TODO $pos
 	 * @return \Dx\View\Helper\Alert 
 	 */
-	public function addInfo($msg, $pos = NULL)
+	public function addInfo($msg, $pos = NULL, $nextPage = FALSE)
 	{
-		$this->add($msg, 'info', $pos);
+		$this->add($msg, 'info', $pos, $nextPage);
 		return $this;
 	}
 
@@ -132,6 +166,15 @@ class Alert extends AbstractHelper
 			}
 		}
 		return $this;
+	}
+	
+	/**
+	 * Render
+	 * @return type
+	 */
+	public function __toString()
+	{
+		return $this->render();
 	}
 
 }
