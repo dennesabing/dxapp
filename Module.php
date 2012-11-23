@@ -48,7 +48,7 @@ class Module
 		$sm = $app->getServiceManager();
 		$evm = $sm->get('doctrine.eventmanager.orm_default');
 
-		$tablePrefix = new \Dx\Doctrine\Extension\TablePrefix('dx_');
+		$tablePrefix = new \Dxapp\Doctrine\Extension\TablePrefix('dx_');
 		$evm->addEventListener(\Doctrine\ORM\Events::loadClassMetadata, $tablePrefix);
 
 		$cache = $sm->get('doctrine.cache.memcache');

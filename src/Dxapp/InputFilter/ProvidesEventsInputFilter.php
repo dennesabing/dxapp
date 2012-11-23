@@ -127,6 +127,27 @@ class ProvidesEventsInputFilter extends InputFilter
 	{
 		return $this->xmlForm;
 	}
+	
+
+	/**
+	 * Transform an XML file to array
+	 * @param string $xmlFile
+	 * @return type
+	 */
+	protected function xmlToArray($xmlFile)
+	{
+		$data = FALSE;
+		if (file_exists($xmlFile))
+		{
+			$reader = new \Zend\Config\Reader\Xml();
+			$xml = $reader->fromFile($xmlFile);
+			if ($xml)
+			{
+				$data = $xml;
+			}
+		}
+		return $data;
+	}
 
 	/**
 	 * Form Setup from XML
@@ -142,7 +163,7 @@ class ProvidesEventsInputFilter extends InputFilter
 		$xml = $this->getXmlForm();
 		if (!is_array($xml))
 		{
-			$xml = \Dx\Reader\Xml::toArray($xml);
+			$xml = $this->xmlToArray($xml);
 		}
 
 		if ($xml && is_array($xml) && !empty($xml))

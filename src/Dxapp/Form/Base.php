@@ -42,6 +42,26 @@ class Base extends ZendForm
 	protected $xmlForm = NULL;
 
 	/**
+	 * Transform an XML file to array
+	 * @param string $xmlFile
+	 * @return type
+	 */
+	protected function xmlToArray($xmlFile)
+	{
+		$data = FALSE;
+		if (file_exists($xmlFile))
+		{
+			$reader = new \Zend\Config\Reader\Xml();
+			$xml = $reader->fromFile($xmlFile);
+			if ($xml)
+			{
+				$data = $xml;
+			}
+		}
+		return $data;
+	}
+
+	/**
 	 * Form Setup from XML
 	 * @param string|array $xmlFile
 	 * @return type 
@@ -55,7 +75,7 @@ class Base extends ZendForm
 		$xml = $this->getXmlForm();
 		if (!is_array($xml))
 		{
-			$xml = \Dx\Reader\Xml::toArray($xml);
+			$xml = $this->xmlToArray($xml);
 		}
 		$fieldsets = array();
 		$elements = array();
@@ -97,7 +117,7 @@ class Base extends ZendForm
 				{
 					if (isset($ele['fieldset']) && !empty($ele['fieldset']))
 					{
-						if(!isset($ele['name']))
+						if (!isset($ele['name']))
 						{
 							$ele['name'] = $eleName;
 						}
@@ -203,7 +223,7 @@ class Base extends ZendForm
 	public function orderElement($name, $elements, $ele)
 	{
 		$positions = array('after', 'before');
-		if(!isset($ele['name']))
+		if (!isset($ele['name']))
 		{
 			$ele['name'] = $name;
 		}

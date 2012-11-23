@@ -8,7 +8,7 @@
 		<?php echo $this->partial('nav.phtml') ?>
 		<div class="container">
 			<div class="row">
-				<?php echo $this->dxBreadcrumb()->render() ?>
+				<div class="span12"><?php echo $this->dxBreadcrumb()->render()?></div>
 				<div class="span9">
 					<?php echo $this->dxAlert()->render() ?>
 					<?php echo $this->dxHtml()->getTitle() ? '<h1>' . $this->dxHtml()->getTitle() . '</h1>' : ''; ?>

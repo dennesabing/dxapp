@@ -15,7 +15,11 @@
 	],
 	"require": {
 		"php": ">=5.3.0",
-		"dennesabing/dx" : "*"
+		"dennesabing/dx" : "*",
+		"zendframework/zendframework": "2.*",
+		"doctrine/common":"dev-master",
+		"symfony/yaml": "2.*",
+		"symfony/console": "2.*"
 	},
 	"autoload": {
 		"classmap" : ["Module.php"]

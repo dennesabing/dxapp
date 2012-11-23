@@ -552,7 +552,7 @@ class ModuleOptions extends AbstractOptions
 	 */
 	public function setApplicationPath($path)
 	{
-		if (\Dx\File::checkDir($path))
+		if (is_dir($path))
 		{
 			$this->applicationPath = $path;
 		}
@@ -575,7 +575,7 @@ class ModuleOptions extends AbstractOptions
 	 */
 	public function setSitePath($path)
 	{
-		if (\Dx\File::checkDir($path))
+		if (is_dir($path))
 		{
 			$this->sitePath = $path;
 		}
