@@ -538,6 +538,10 @@ class ModuleOptions extends AbstractOptions
 	 */
 	public function getDomain()
 	{
+		if(empty($this->domain))
+		{
+			return $_SERVER['HTTP_HOST'];
+		}
 		return $this->domain;
 	}
 

@@ -113,4 +113,14 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 		$viewModel = new ViewModel();
 		$viewModel->dxAlert($msg);
 	}
+	
+	/**
+	 * Proxy
+	 * Return the ZfcUser Authentication plugin
+	 * @return object
+	 */
+	public function getAuth()
+	{
+		return $this->serviceManager->get('zfcUserAuthentication');
+	}
 }
