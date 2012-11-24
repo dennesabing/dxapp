@@ -200,10 +200,10 @@ class Html extends AbstractHelper
 		$http = '';
 		if ($useAbsolute)
 		{
-			$http = 'http://' . $this->getOptions()->getDomain();
+			$http = 'http://' . $this->getModuleOptions()->getDomain();
 			if ($useSecure)
 			{
-				$http = 'https://' . $this->getOptions()->getDomain();
+				$http = 'https://' . $this->getModuleOptions()->getDomain();
 			}
 		}
 		$url = $http . $url;

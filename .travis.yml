@@ -1,0 +1,16 @@
+language: php
+
+php:
+  - 5.3.3
+
+env:
+ - ZF2_PATH=./zf2/library
+
+before_install:
+ - cp composer.json ./test
+ - cd test
+ - curl -s http://getcomposer.org/installer | php
+ - php composer.phar install
+
+script:
+ - phpunit

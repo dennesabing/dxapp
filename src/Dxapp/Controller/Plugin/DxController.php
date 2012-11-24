@@ -27,11 +27,7 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 */
 	public function getEntityManager()
 	{
-		if (NULL === $this->em)
-		{
-			$this->setEntityManager($this->getServiceLocator()->get('Doctrine\ORM\EntityManager'));
-		}
-		return $this->em;
+		return $this->getDxService()->getEntityManager();
 	}
 	
 	/**
@@ -98,7 +94,7 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	/**
 	 * set Status code NotFound or 404 
 	 */
-	public function notFound()
+	public function pageNotFound()
 	{
 		$this->getController()->getResponse()->setStatusCode(404);
 	}

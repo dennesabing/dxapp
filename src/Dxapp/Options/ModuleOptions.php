@@ -108,6 +108,18 @@ class ModuleOptions extends AbstractOptions
 	protected $emailSending = TRUE;
 
 	/**
+	 * The email address of the sender of the email verification
+	 * @var string
+	 */
+	protected $emailNoReplySender = 'no-reply@localhost';
+
+	/**
+	 * The name of the sender of the email verification
+	 * @var string
+	 */
+	protected $emailNoReplySenderName = 'No Reply';
+
+	/**
 	 * The Main breadcrumb
 	 * @var array
 	 */
@@ -146,6 +158,46 @@ class ModuleOptions extends AbstractOptions
 	protected $formTypeLayout = 'vertical';
 
 	/**
+	 * Set the Name of the sender for the email verification
+	 * @param string $name The Name of the sender
+	 * @return \DxUser\Options\ModuleOptions 
+	 */
+	public function setEmailNoReplySenderName($name)
+	{
+		$this->emailNoReplySenderName = $name;
+		return $this;
+	}
+
+	/**
+	 * Get the name of the sender of the email verification
+	 * @return string
+	 */
+	public function getEmailNoReplySenderName()
+	{
+		return $this->emailNoReplySenderName;
+	}
+
+	/**
+	 * Set the sender - email of the Email verifcation
+	 * @param string $email The email address
+	 * @return \DxUser\Options\ModuleOptions 
+	 */
+	public function setEmailNoReplySender($email)
+	{
+		$this->emailNoReplySender = $email;
+		return $this;
+	}
+
+	/**
+	 * Return the email address of the sender of email verify
+	 * @return string
+	 */
+	public function getEmailNoReplySender()
+	{
+		return $this->emailNoReplySender;
+	}
+
+	/**
 	 * Set the themeFolders
 	 * @param type $themeFolder
 	 * @return \Dxapp\Options\ModuleOptions
@@ -162,7 +214,7 @@ class ModuleOptions extends AbstractOptions
 				{
 					$path = $folder->getPath();
 					$configFile = $path . '/' . $in . '/theme.config.php';
-					if(file_exists($configFile))
+					if (file_exists($configFile))
 					{
 						$this->addTemplateMap($in, include_once $configFile);
 					}
@@ -180,12 +232,12 @@ class ModuleOptions extends AbstractOptions
 	 */
 	public function addTemplateMap($name, $config)
 	{
-		if(!array_key_exists($name, $this->getTemplateMaps()))
+		if (!array_key_exists($name, $this->getTemplateMaps()))
 		{
 			$this->templateMaps['front'][$name] = $config;
 		}
 	}
-	
+
 	/**
 	 * Return all the template maps
 	 * @return array
@@ -194,7 +246,7 @@ class ModuleOptions extends AbstractOptions
 	{
 		return $this->templateMaps;
 	}
-	
+
 	/**
 	 * Return the Theme Folders
 	 * @return array
@@ -538,7 +590,7 @@ class ModuleOptions extends AbstractOptions
 	 */
 	public function getDomain()
 	{
-		if(empty($this->domain))
+		if (empty($this->domain))
 		{
 			return $_SERVER['HTTP_HOST'];
 		}
@@ -650,5 +702,4 @@ class ModuleOptions extends AbstractOptions
 	{
 		return $this->breadcrumbMain;
 	}
-
 }
