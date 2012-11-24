@@ -36,30 +36,18 @@ abstract class AbstractHelper extends ZendAbstractHelper implements ServiceManag
 	 *
 	 * @return Zend\Stdlib\AbstractOptions
 	 */
-	public function getModuleOptions($modulePrefix)
+	public function getModuleOptions($modulePrefix = NULL)
 	{
-		if ($modulePrefix !== NULL)
-		{
-			if ($this->getServiceManager()->has($modulePrefix))
-			{
-				return $this->getServiceManager()->get($modulePrefix);
-			}
-			if ($this->getServiceManager()->has($modulePrefix . '_module_options'))
-			{
-				return $this->getServiceManager()->get($modulePrefix . '_module_options');
-			}
-		}
-		return $this->getServiceManager()->get('dxapp_module_options');
+		return $this->getDxService()->getModuleOptions($modulePrefix);
 	}
-
+	
 	/**
-	 * Proxy to $this->getModuleOptions();
-	 * @param type $modulePrefix
-	 * @return type 
+	 * Return the DxService
+	 * @return type
 	 */
-	public function getOptions($modulePrefix = NULL)
+	public function getDxService()
 	{
-		return $this->getModuleOptions($modulePrefix);
+		return $this->getServiceManager()->get('dxService');
 	}
 
 }

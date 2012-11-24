@@ -3,12 +3,12 @@
 $html = '';
 
 //$this->dxHtml()->setTitle('Dx Application');
-$this->dxHead()->setTitle($this->dxConfig()->getOptions()->getProjectName());
+$this->dxHtml()->setTitle($this->dx()->getModuleOptions()->getProjectName());
 
 $html .= '  <div class="hero-unit">
-    <h1>Welcome to <span class="zf-green">' . $this->dxConfig()->getOptions()->getProjectName() . '</span></h1>
+    <h1>Welcome to <span class="zf-green">' . $this->dx()->getModuleOptions()->getProjectName() . '</span></h1>
 	<p>&nbsp;</p>
-    <p>Congratulations! You have successfully installed the ' . $this->dxConfig()->getOptions()->getProjectName() . '.
+    <p>Congratulations! You have successfully installed the ' . $this->dx()->getModuleOptions()->getProjectName() . '.
 		<br />This skeleton can serve as a simple starting point for you to begin building your application on using Dx and Zend Framework 2.</p>
   </div>';
 

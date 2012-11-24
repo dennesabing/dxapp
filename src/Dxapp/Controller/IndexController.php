@@ -1,14 +1,13 @@
 <?php
-
-
 namespace Dxapp\Controller;
 
-use Dxapp\Controller\FrontendController;
+use Zend\Mvc\Controller\AbstractActionController as ActionController;
+use Zend\View\Model\ViewModel;
 
-class IndexController extends FrontendController
+class IndexController extends ActionController
 {
 	public function indexAction()
 	{
-		return $this->getViewModel();
+		return new ViewModel();
 	}
 }

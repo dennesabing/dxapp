@@ -2,11 +2,7 @@
 
 namespace Dxapp;
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\ClassLoader as DoctrineClassLoader;
-use Zend\Mvc\ModuleRouteListener;
-use Zend\Module\Manager,
-	Zend\EventManager\StaticEventManager,
+use Doctrine\Common\Annotations\AnnotationRegistry,
 	Zend\Mvc\MvcEvent,
 	Zend\EventManager\EventInterface as Event;
 
@@ -163,6 +159,13 @@ class Module
 					$memcache->connect('localhost', 11211);
 					return $memcache;
 				},
+				'dxService' => function($sm)
+				{
+					$dxService = new \Dxapp\Service\Dx();
+					$dxService->setEntityManager($sm->get('doctrine.entitymanager.orm_default'));
+					$dxService->setViewRenderer($sm->get('ViewRenderer'));
+					return $dxService;
+				},
 				'dxFilecache' => function($sm)
 				{
 					$config = $sm->get('dxapp_module_options');
@@ -181,10 +184,6 @@ class Module
 									'Serializer'
 								)
 							));
-				},
-				'dxSession' => function()
-				{
-					return new \Zend\Session\Container('dxbuysell');
 				},
 				'dxThemeAssets' => function($sm)
 				{
@@ -207,37 +206,33 @@ class Module
 	{
 		return array(
 			'factories' => array(
-				'dxConfig' => function($sm)
+				'dx' => function($sm)
 				{
-					$config = new \Dxapp\View\Helper\Config();
+					$config = new \Dxapp\View\Helper\Dx();
 					$config->setServiceManager($sm);
 					return $config;
 				},
-				'dxUser' => function($sm)
+				'dxUser' => function()
 				{
 					return new \Dxapp\View\Helper\User();
 				},
-				'dxBreadcrumb' => function($sm)
+				'dxBreadcrumb' => function()
 				{
 					return new \Dxapp\View\Helper\Breadcrumb();
 				},
 				'dxHtml' => function($sm)
 				{
-					$config = $sm->get('dxConfig')->getOptions();
+					$config = $sm->get('dx')->getModuleOptions();
 					$html = new \Dxapp\View\Helper\Html();
 					$html->setUseAbsoluteUrl($config->getUseAbsoluteUrl());
 					$html->setUseSecureUrl($config->getUseSecureUrl());
 					return $html;
 				},
-				'dxSidebar' => function($sm)
+				'dxSidebar' => function()
 				{
 					return new \Dxapp\View\Helper\Sidebar();
 				},
-				'dxHead' => function($sm)
-				{
-					return new \Dxapp\View\Helper\Head();
-				},
-				'dxAlert' => function($sm)
+				'dxAlert' => function()
 				{
 					return new \Dxapp\View\Helper\Alert();
 				},

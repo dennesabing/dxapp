@@ -29,7 +29,7 @@ class Breadcrumb extends AbstractHelper
 
 	public function __invoke()
 	{
-		$this->add($this->getView()->dxConfig()->getOptions()->getBreadcrumbMain());
+		$this->add($this->getView()->dx()->getModuleOptions()->getBreadcrumbMain());
 		return $this;
 	}
 

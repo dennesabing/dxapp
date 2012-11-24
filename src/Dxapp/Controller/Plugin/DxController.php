@@ -3,7 +3,6 @@
 namespace Dxapp\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
@@ -22,6 +21,19 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 */
 	protected $moduleOptions = NULL;
 
+	/**
+	 * Return the Entity Manager
+	 * @return DoctrineEntityManager
+	 */
+	public function getEntityManager()
+	{
+		if (NULL === $this->em)
+		{
+			$this->setEntityManager($this->getServiceLocator()->get('Doctrine\ORM\EntityManager'));
+		}
+		return $this->em;
+	}
+	
 	/**
 	 * Retrieve service manager instance
 	 *
@@ -42,6 +54,15 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	{
 		$this->serviceManager = $serviceManager;
 	}
+	
+	/**
+	 * Return the DxService
+	 * @return type
+	 */
+	public function getDxService()
+	{
+		return $this->getServiceManager()->get('dxService');
+	}
 
 	/**
 	 * Get Session Manager
@@ -50,15 +71,7 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 */
 	public function getSession($modulePrefix = NULL)
 	{
-		if ($modulePrefix !== NULL)
-		{
-			if ($this->getServiceManager()->get($modulePrefix . '_session') instanceof \Zend\Session\Container)
-			{
-				return $this->getServiceManager()->get($modulePrefix . '_session');
-			}
-			return new \Zend\Session\Container($modulePrefix . '_session');
-		}
-		return new \Zend\Session\Container('dxApp_session');
+		return $this->getDxService()->getSession($modulePrefix);
 	}
 
 	/**
@@ -69,30 +82,17 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 */
 	public function getModuleOptions($modulePrefix = NULL)
 	{
-		if ($modulePrefix !== NULL)
-		{
-			if ($this->getServiceManager()->has($modulePrefix))
-			{
-				return $this->getServiceManager()->get($modulePrefix);
-			}
-			if ($this->getServiceManager()->has($modulePrefix . '_module_options'))
-			{
-				return $this->getServiceManager()->get($modulePrefix . '_module_options');
-			}
-		}
-		return $this->getServiceManager()->get('dxapp_module_options');
+		return $this->getDxService()->getModuleOptions($modulePrefix);
 	}
-
+	
 	/**
-	 * Set Module Options
-	 *
-	 * @param AbstractOptions $options
-	 * @return $this
+	 * Proxy
+	 * Return the ZfcUser Authentication plugin
+	 * @return object
 	 */
-	public function setModuleOptions($options)
+	public function getAuth()
 	{
-		$this->options = $options;
-		return $this;
+		return $this->getDxService()->getAuth();
 	}
 	
 	/**
@@ -108,19 +108,9 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 * @param type $msg The Message
 	 * @param type $type The Type of Message
 	 */
-	public function addMessage($msg, $type = 'error', $session = TRUE)
+	public function addMessage($msg, $type = 'error', $session = FALSE)
 	{
 		$viewModel = new ViewModel();
-		$viewModel->dxAlert($msg);
-	}
-	
-	/**
-	 * Proxy
-	 * Return the ZfcUser Authentication plugin
-	 * @return object
-	 */
-	public function getAuth()
-	{
-		return $this->serviceManager->get('zfcUserAuthentication');
+		$viewModel->dxAlert($msg, $type, $session);
 	}
 }
