@@ -219,10 +219,6 @@ class Module
 					$config->setServiceManager($sm);
 					return $config;
 				},
-				'dxUser' => function()
-				{
-					return new \Dxapp\View\Helper\User();
-				},
 				'dxBreadcrumb' => function()
 				{
 					return new \Dxapp\View\Helper\Breadcrumb();
