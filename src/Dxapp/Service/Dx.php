@@ -246,6 +246,15 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 			
 		}
 	}
+	
+	/**
+	 * Return the User Service
+	 * @return object
+	 */
+	public function getUserService()
+	{
+		return $this->getServiceManager()->get('dxuser_service_user');
+	}
 
 	/**
 	 * Set service manager instance

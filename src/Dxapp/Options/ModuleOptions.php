@@ -204,6 +204,7 @@ class ModuleOptions extends AbstractOptions
 	 */
 	public function setThemeFolders($themeFolder)
 	{
+		
 		if (file_exists($themeFolder))
 		{
 			$folder = new \DirectoryIterator($themeFolder);
@@ -222,6 +223,16 @@ class ModuleOptions extends AbstractOptions
 				$folder->next();
 			}
 		}
+		return $this;
+	}
+	
+	/**
+	 * Add a theme folder
+	 * @param type $themeFolder
+	 */
+	public function addThemeFolder($themeFolder)
+	{
+		$this->setThemeFolders($themeFolder);
 		return $this;
 	}
 

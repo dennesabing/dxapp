@@ -88,27 +88,34 @@ class Module
 		$frontendTheme = $config->getFrontendTheme();
 		$viewResolver = $sm->get('ViewResolver');
 		$viewThemeResolver = new \Zend\View\Resolver\AggregateResolver();
-		if (isset($templateMaps['front'][$frontendTheme]['view_manager']['template_map']))
+		$templateMapResolver = new \Zend\View\Resolver\TemplateMapResolver();
+		$pathResolver = new \Zend\View\Resolver\TemplatePathStack();
+		$frontendThemes = array('dxdefault');
+		if (!in_array($frontendTheme, $frontendThemes))
 		{
-			$templateMapResolver = new \Zend\View\Resolver\TemplateMapResolver(
-							$templateMaps['front'][$frontendTheme]['view_manager']['template_map']);
-			$viewThemeResolver->attach($templateMapResolver);
+			$frontendThemes[] = $frontendTheme;
 		}
-		if (isset($templateMaps['front'][$frontendTheme]['view_manager']['template_path_stack']))
+		foreach ($frontendThemes as $frontendTheme)
 		{
-			$pathResolver = new \Zend\View\Resolver\TemplatePathStack(
-							array('script_paths' => $templateMaps['front'][$frontendTheme]['view_manager']['template_path_stack'])
-			);
-			$defaultPathStack = $sm->get('ViewTemplatePathStack');
-			$pathResolver->setDefaultSuffix($defaultPathStack->getDefaultSuffix());
-			$viewThemeResolver->attach($pathResolver);
+			if (isset($templateMaps['front'][$frontendTheme]['view_manager']['template_map']))
+			{
+				$templateMapResolver->add($templateMaps['front'][$frontendTheme]['view_manager']['template_map']);
+			}
+			if (isset($templateMaps['front'][$frontendTheme]['view_manager']['template_path_stack']))
+			{
+				$pathResolver->addPaths($templateMaps['front'][$frontendTheme]['view_manager']['template_path_stack']);
+				$defaultPathStack = $sm->get('ViewTemplatePathStack');
+				$pathResolver->setDefaultSuffix($defaultPathStack->getDefaultSuffix());
+				$viewThemeResolver->attach($pathResolver);
+			}
+			if (isset($templateMaps['front'][$frontendTheme]['assetic_configuration']))
+			{
+				$themeAssets = $sm->get('dxThemeAssets');
+				$themeAssets->renderThemeAssets($frontendTheme, $templateMaps['front'][$frontendTheme]['assetic_configuration']);
+			}
 		}
+		$viewThemeResolver->attach($templateMapResolver);
 		$viewResolver->attach($viewThemeResolver, 100);
-		if (isset($templateMaps['front'][$frontendTheme]['assetic_configuration']))
-		{
-			$themeAssets = $sm->get('dxThemeAssets');
-			$themeAssets->renderThemeAssets($frontendTheme, $templateMaps['front'][$frontendTheme]['assetic_configuration']);
-		}
 		$section = $config->getApplicationSection();
 		if ($section == 'admin')
 		{
