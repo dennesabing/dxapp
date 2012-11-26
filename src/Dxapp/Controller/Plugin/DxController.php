@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\View\Model\ViewModel;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
+use Zend\Stdlib\Parameters;
 
 class DxController extends AbstractPlugin implements ServiceManagerAwareInterface
 {
@@ -29,7 +30,7 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	{
 		return $this->getDxService()->getEntityManager();
 	}
-	
+
 	/**
 	 * Retrieve service manager instance
 	 *
@@ -50,7 +51,7 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	{
 		$this->serviceManager = $serviceManager;
 	}
-	
+
 	/**
 	 * Return the DxService
 	 * @return type
@@ -80,7 +81,7 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	{
 		return $this->getDxService()->getModuleOptions($modulePrefix);
 	}
-	
+
 	/**
 	 * Proxy
 	 * Return the ZfcUser Authentication plugin
@@ -90,7 +91,7 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	{
 		return $this->getDxService()->getAuth();
 	}
-	
+
 	/**
 	 * set Status code NotFound or 404 
 	 */
@@ -98,7 +99,21 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	{
 		$this->getController()->getResponse()->setStatusCode(404);
 	}
-	
+
+	/**
+	 * Goto login page
+	 * @param string $uri the Redirect Page
+	 */
+	public function gotoLogin($uri = 'xxx')
+	{
+		$redirect = '';
+		if(!empty($uri))
+		{
+			$redirect = '?redirect=' . $uri;
+		}
+		return $this->getController()->redirect()->toUrl('/login' . $redirect);
+	}
+
 	/**
 	 * Add an error message
 	 * @param type $msg The Message
@@ -109,4 +124,5 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 		$viewModel = new ViewModel();
 		$viewModel->dxAlert($msg, $type, $session);
 	}
+
 }

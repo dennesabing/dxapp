@@ -158,6 +158,32 @@ class ModuleOptions extends AbstractOptions
 	protected $formTypeLayout = 'vertical';
 
 	/**
+	 * If to enable Dlu on form rendering
+	 * @var boolean
+	 */
+	protected $enableFormDlu = TRUE;
+	
+	/**
+	 * Set if to enable/disable Dlu on form rendering
+	 * @param boolean $flag
+	 * @return \Dxapp\Options\ModuleOptions
+	 */
+	public function setEnableFormDlu($flag)
+	{
+		$this->enableFormDlu = $flag;
+		return $this;
+	}
+	
+	/**
+	 * Return if to enable/disable Dlu on form rendering
+	 * @return boolean
+	 */
+	public function getEnableFormDlu()
+	{
+		return $this->enableFormDlu;
+	}
+	
+	/**
 	 * Set the Name of the sender for the email verification
 	 * @param string $name The Name of the sender
 	 * @return \DxUser\Options\ModuleOptions 
