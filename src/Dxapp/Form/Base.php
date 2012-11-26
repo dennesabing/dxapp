@@ -235,7 +235,7 @@ class Base extends ZendForm
 				{
 					$keyPos = $ele[$pos];
 					unset($ele[$pos]);
-					$elements = \Dx\ArrayManager::array_insert($elements, $keyPos, array($name => $ele), $pos);
+					$elements = \Dxapp\Utility\ArrayManager::array_insert($elements, $keyPos, array($name => $ele), $pos);
 					return $elements;
 				}
 			}

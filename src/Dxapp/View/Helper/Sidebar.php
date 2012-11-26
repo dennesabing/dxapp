@@ -62,8 +62,11 @@ class Sidebar extends AbstractHelper
 	 */
 	public function appendToRight($key, $content, $option = array())
 	{
-		$option['content'] = $content;
-		$content = $option;
+		if(!empty($option))
+		{
+			$option['content'] = $content;
+			$content = $option;
+		}
 		$this->add($key, $content, 'right');
 		return $this;
 	}
@@ -167,7 +170,7 @@ class Sidebar extends AbstractHelper
 				{
 					$contentx = $newArray[$key];
 					unset($newArray[$key]);
-					$newArray = \Dx\ArrayManager::array_insert($newArray, $index, array($key => $contentx), $pos);
+					$newArray = \Dxapp\Utility\ArrayManager::array_insert($newArray, $index, array($key => $contentx), $pos);
 				}
 			}
 		}
