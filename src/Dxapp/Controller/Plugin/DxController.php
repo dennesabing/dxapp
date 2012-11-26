@@ -93,6 +93,35 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	}
 
 	/**
+	 * Return the DxService
+	 * @return type
+	 */
+	public function getUserService()
+	{
+		return $this->getServiceManager()->get('dxuser_service_user');
+	}
+	
+	/**
+	 * Check if a user is loggedIn
+	 * @param object $user DxUser\Entity\User
+	 * @return boolean
+	 */
+	public function isLogin($user = NULL)
+	{
+		return $this->getUserService()->isLogin($user);
+	}
+	
+	/**
+	 * Check if the given user is an admin
+	 * @param object $user DxUser\Entity\User
+	 * @return boolean
+	 */
+	public function isAdmin($user = NULL)
+	{
+		return $this->getUserService()->isAdmin($user);
+	}
+	
+	/**
 	 * set Status code NotFound or 404 
 	 */
 	public function pageNotFound()
@@ -101,17 +130,22 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	}
 
 	/**
-	 * Goto login page
+	 * Goto login page and redirect afterwards
 	 * @param string $uri the Redirect Page
 	 */
-	public function gotoLogin($uri = 'xxx')
+	public function gotoLogin()
 	{
-		$redirect = '';
-		if(!empty($uri))
-		{
-			$redirect = '?redirect=' . $uri;
-		}
+		$uri = $this->getController()->getRequest()->getUri();
+		$redirect = '?redirect=' . $uri;
 		return $this->getController()->redirect()->toUrl('/login' . $redirect);
+	}
+	
+	/**
+	 * Access error
+	 */
+	public function gotoAccessError()
+	{
+		$this->pageNotFound();
 	}
 
 	/**
