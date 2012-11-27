@@ -148,10 +148,7 @@ class Module
 	
     private function getLoadedModules()
     {
-        if (null === $this->loadedModules) {
-            $this->loadedModules = $this->moduleManager->getLoadedModules();
-        }
-        return $this->loadedModules;
+        return $this->moduleManager->getLoadedModules();
     }
 
 	/**
