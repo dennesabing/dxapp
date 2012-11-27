@@ -124,6 +124,12 @@ class Module
 		if (!empty($asseticConfiguration))
 		{
 			$as = $sm->get('dxThemeAssets');
+			$response = $e->getResponse();
+			if (!$response)
+			{
+				$response = new Response();
+				$e->setResponse($response);
+			}
 			$router = $e->getRouteMatch();
 			$as->setRouteName($router->getMatchedRouteName());
 			$as->setControllerName($router->getParam('controller'));
@@ -133,7 +139,7 @@ class Module
 			$as->initLoadedModules($this->getLoadedModules());
 			$as->setupRenderer($sm->get('ViewRenderer'));
 		}
-		
+
 		$section = $config->getApplicationSection();
 		if ($section == 'admin')
 		{
@@ -145,11 +151,11 @@ class Module
 
 		$viewModel->setTemplate($template);
 	}
-	
-    private function getLoadedModules()
-    {
-        return $this->moduleManager->getLoadedModules();
-    }
+
+	private function getLoadedModules()
+	{
+		return $this->moduleManager->getLoadedModules();
+	}
 
 	/**
 	 * Set the Application section based on route.
@@ -263,7 +269,7 @@ class Module
 				'dxAlert' => function()
 				{
 					return new \Dxapp\View\Helper\Alert();
-				},
+				}
 			),
 		);
 	}

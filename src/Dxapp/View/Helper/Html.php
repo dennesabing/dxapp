@@ -33,6 +33,12 @@ class Html extends AbstractHelper
 	protected $useSecureUrl = FALSE;
 
 	/**
+	 * Scripts to be loaded on Load
+	 * @var array
+	 */
+	protected $onLoadScripts = array();
+
+	/**
 	 * The Header 1 Title
 	 * @var string
 	 */
@@ -72,7 +78,7 @@ class Html extends AbstractHelper
 	{
 		return $this->bodyClass;
 	}
-	
+
 	/**
 	 * Get asset URL
 	 * @param mixed string|array $file
@@ -84,7 +90,7 @@ class Html extends AbstractHelper
 	{
 		return $this->getBaseUrl('assets') . '/' . $asset;
 	}
-	
+
 	/**
 	 * Get the URL of a css file
 	 * @param mixed string|array $file
@@ -314,7 +320,7 @@ class Html extends AbstractHelper
 	{
 		return $this->title;
 	}
-	
+
 	/**
 	 * Render a social login button
 	 * @param type $provider
@@ -323,10 +329,10 @@ class Html extends AbstractHelper
 	public function socialSignInButton($provider)
 	{
 		return '<a class="btn" href="'
-            . $this->view->url('scn-social-auth-user/login/provider', array('provider' => $provider))
-            . '">' . ucfirst($provider) . '</a>';
+				. $this->view->url('scn-social-auth-user/login/provider', array('provider' => $provider))
+				. '">' . ucfirst($provider) . '</a>';
 	}
-	
+
 	/**
 	 * Create a navigation based on links ($navs) and $options
 	 * @param type $navs
@@ -336,9 +342,32 @@ class Html extends AbstractHelper
 	public function nav($navs, $options)
 	{
 		return $this->view->partial('html_nav', array(
-			'navs' => $navs,
-			'options' => $options
-		));
+					'navs' => $navs,
+					'options' => $options
+				));
 	}
 
+	/**
+	 * 
+	 * @param type $script
+	 */
+	public function addOnLoadScript($script)
+	{
+		$this->onLoadScripts[] = $script;
+	}
+
+	/**
+	 * Render onloaded scripts
+	 */
+	public function renderOnLoadScripts()
+	{
+		if (!empty($this->onLoadScripts))
+		{
+			$str = '';
+			$str .= '<script type="text/javascript">$(document).ready(function() {';
+			$str .= implode(' ', $this->onLoadScripts);
+			$str .= '});</script>';
+			return $str;
+		}
+	}
 }

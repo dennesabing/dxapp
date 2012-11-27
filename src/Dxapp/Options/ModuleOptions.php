@@ -129,6 +129,13 @@ class ModuleOptions extends AbstractOptions
 			'url' => '/'
 		)
 	);
+	
+	/**
+	 * Timezone to use when saving dates in DB
+	 * Note: not used in Doctrine's Timestampable
+	 * @var string
+	 */
+	protected $dbTimezone = 'UTC';
 
 	/**
 	 * The SiteWide DEfault maxRows

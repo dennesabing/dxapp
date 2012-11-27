@@ -20,6 +20,8 @@ $arr = array(
 		'collections' => array(
 			'base_css' => array(
 				'assets' => array(
+					'css/bootstrap-datepicker-b.css',
+					'css/bootstrap-timepicker.css',
 					'css/bootstrap-responsive.min.css',
 					'css/bootstrap.min.css',
 					'css/dlu-tw-bootstrap.css',
@@ -38,11 +40,14 @@ $arr = array(
 			),
 			'base_js' => array(
 				'assets' => array(
-					'js/jquery-1.8.0.min.js',
+					'js/jquery-1.7.1.min.js',
 					'js/jquery-ui.1.8.24.custom.min.js',
 					'js/html5.js',
 					'js/bootstrap.min.js',
-					'js/prettify.js'
+					'js/prettify.js',
+					'js/bootstrap-datepicker-b.js',
+					'js/bootstrap-timepicker.js',
+					'js/dx.js'
 				),
 				'options' => array(
 					'output' => 'js/dx.js'
