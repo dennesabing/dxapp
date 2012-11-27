@@ -90,6 +90,10 @@ class ThemeAssets extends AsseticService
 		{
 			$this->configuration->setRoutes($this->themeAssets['routes']);
 		}
+		if(isset($this->themeAssets['modules']))
+		{
+			$this->configuration->setModules($this->themeAssets['modules']);
+		}
 		return $this;
 	}
 	

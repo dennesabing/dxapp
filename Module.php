@@ -4,6 +4,8 @@ namespace Dxapp;
 
 use Doctrine\Common\Annotations\AnnotationRegistry,
 	Zend\Mvc\MvcEvent,
+	Zend\ModuleManager\ModuleManager,
+	Zend\ModuleManager\ModuleManagerInterface,
 	Zend\EventManager\EventInterface as Event;
 
 class Module
@@ -25,8 +27,9 @@ class Module
 		);
 	}
 
-	public function init()
+	public function init(ModuleManagerInterface $manager)
 	{
+		$this->moduleManager = $manager;
 		$namespace = 'Gedmo\Mapping\Annotation';
 		$libPath = 'vendor/Gedmo/doctrine-extension/lib';
 		AnnotationRegistry::registerAutoloadNamespace($namespace, $libPath);
@@ -127,6 +130,7 @@ class Module
 			$as->setActionName($router->getParam('action'));
 			$as->setThemeAssets($asseticConfiguration);
 			$as->renderThemeAssets();
+			$as->initLoadedModules($this->getLoadedModules());
 			$as->setupRenderer($sm->get('ViewRenderer'));
 		}
 		
@@ -141,6 +145,14 @@ class Module
 
 		$viewModel->setTemplate($template);
 	}
+	
+    private function getLoadedModules()
+    {
+        if (null === $this->loadedModules) {
+            $this->loadedModules = $this->moduleManager->getLoadedModules();
+        }
+        return $this->loadedModules;
+    }
 
 	/**
 	 * Set the Application section based on route.
