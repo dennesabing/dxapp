@@ -57,35 +57,6 @@ $arr = array(
 					'move_raw' => true,
 				)
 			),
-			'dynatree_css' => array(
-				'assets' => array(
-					'js/plugins/dynatree/skin/ui.dynatree.css'
-				),
-				'filters' => array(
-					'CssRewriteFilter' => array(
-						'name' => 'Assetic\Filter\CssRewriteFilter'
-					)
-				),
-				'options' => array(
-					'output' => 'css/dynatree.css'
-				)
-			),
-			'dynatree_js' => array(
-				'assets' => array(
-					'js/plugins/dynatree/jquery.cookie.js'
-				),
-				'options' => array(
-					'output' => 'js/dynatree.js'
-				)
-			),
-			'dynatree_images' => array(
-				'assets' => array(
-					'js/plugins/dynatree/skin/*.gif'
-				),
-				'options' => array(
-					'move_raw' => true,
-				)
-			),
 		),
 	)
 );
