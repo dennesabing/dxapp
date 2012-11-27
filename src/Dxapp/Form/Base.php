@@ -167,23 +167,23 @@ class Base extends ZendForm
 			}
 		}
 	}
-	
-    /**
-     * Set a single element attribute
-     *
-     * @param  string $key
-     * @param  mixed  $value
-     * @return Element|ElementInterface
-     */
+
+	/**
+	 * Set a single element attribute
+	 *
+	 * @param  string $key
+	 * @param  mixed  $value
+	 * @return Element|ElementInterface
+	 */
 	public function setAttribute($key, $value)
 	{
-		if($key == 'action')
+		if ($key == 'action')
 		{
-			if(is_array($value))
+			if (is_array($value))
 			{
-				foreach($value as $key => $val)
+				foreach ($value as $key => $val)
 				{
-					if($key == 'route')
+					if ($key == 'route')
 					{
 						$view = $this->getServiceManager()->get('ViewRenderer');
 						$action = $view->url($val);
@@ -194,7 +194,7 @@ class Base extends ZendForm
 		}
 		return parent::setAttribute($key, $value);
 	}
-	
+
 	/**
 	 * Parse and Prepare fieldset before adding to form
 	 * @param array $fs The fieldset with elements
@@ -202,16 +202,16 @@ class Base extends ZendForm
 	 */
 	public function xprepareFieldsets($fs)
 	{
-		if(isset($fs['elements']))
+		if (isset($fs['elements']))
 		{
-			foreach($fs['elements'] as $eleName => $ele)
+			foreach ($fs['elements'] as $eleName => $ele)
 			{
 				$fs['elements'][$eleName] = $this->xprepareElement($ele);
 			}
 		}
 		return $fs;
 	}
-	
+
 	/**
 	 * Prepare elements before adding to form
 	 * @param array $ele
@@ -219,18 +219,18 @@ class Base extends ZendForm
 	 */
 	public function xprepareElement($ele)
 	{
-		if(isset($ele['spec']['options']['value_options']))
+		if (isset($ele['spec']['options']['value_options']))
 		{
 			$valueOptions = $ele['spec']['options']['value_options'];
-			if(!is_array($valueOptions))
+			if (!is_array($valueOptions))
 			{
 				if (FALSE !== strpos($valueOptions, 'getServiceManager'))
 				{
 					$callback = explode('|', $valueOptions);
 					$serviceIndex = $callback[1];
 					$method = $callback[2];
-					$sm = $this->getServiceManager()->get($serviceIndex)->$method();
-					die;
+					$valueOptions = $this->getServiceManager()->get($serviceIndex)->$method();
+					$ele['spec']['options']['value_options'] = $valueOptions;
 				}
 			}
 		}

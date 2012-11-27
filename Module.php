@@ -89,11 +89,11 @@ class Module
 		$template = 'layout/layout'; //$viewModel->getTemplate();
 		$templateMaps = $config->getTemplateMaps();
 		$frontendThemex = $config->getFrontendTheme();
+		$frontendThemes = $config->getFrontendThemes();//array('dxdefault');
 		$viewResolver = $sm->get('ViewResolver');
 		$viewThemeResolver = new \Zend\View\Resolver\AggregateResolver();
 		$templateMapResolver = new \Zend\View\Resolver\TemplateMapResolver();
 		$pathResolver = new \Zend\View\Resolver\TemplatePathStack();
-		$frontendThemes = array('dxdefault');
 		$asseticConfiguration = array();
 		if (!in_array($frontendThemex, $frontendThemes))
 		{

@@ -8,8 +8,9 @@ namespace Dxapp\Utility;
 class Timezone
 {
 
-	public static function get_time_zone($country, $region = NULL)
+	public static function getTimezone($country, $region = NULL)
 	{
+		$timezone = NULL;
 		switch ($country)
 		{
 			case "US":

@@ -70,6 +70,12 @@ class ModuleOptions extends AbstractOptions
 	protected $frontendTheme = 'dxdefault';
 
 	/**
+	 * Collection of Frontend themes
+	 * @var array
+	 */
+	protected $frontendThemes = array();
+
+	/**
 	 * The front theme scheme
 	 * @TODO Feature
 	 * @var string
@@ -279,8 +285,27 @@ class ModuleOptions extends AbstractOptions
 	{
 		if (!array_key_exists($name, $this->getTemplateMaps()))
 		{
+			$this->addFrontendTheme($name);
 			$this->templateMaps['front'][$name] = $config;
 		}
+	}
+	
+	/**
+	 * Add to frontEndThemes
+	 * @param type $name
+	 */
+	public function addFrontendTheme($name)
+	{
+		$this->frontendThemes[] = $name;
+	}
+	
+	/**
+	 * REturn the collected themes
+	 * @return array
+	 */
+	public function getFrontendThemes()
+	{
+		return $this->frontendThemes;
 	}
 
 	/**
