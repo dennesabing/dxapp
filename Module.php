@@ -37,8 +37,8 @@ class Module
 		$application = $e->getApplication();
 		$eventManager = $application->getEventManager();
 		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'setApplicationSection'));
-		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'setLayout'));
-		$eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'setLayout'));
+		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'setLayout'), 31);
+		$eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'setLayout'), 31);
 
 		$app = $e->getParam('application');
 		$sm = $app->getServiceManager();
@@ -83,17 +83,18 @@ class Module
 		$sm = $app->getServiceManager();
 		$config = $sm->get('dxapp_module_options');
 		$viewModel = $e->getViewModel();
-		$template = $viewModel->getTemplate();
+		$template = 'layout/layout'; //$viewModel->getTemplate();
 		$templateMaps = $config->getTemplateMaps();
-		$frontendTheme = $config->getFrontendTheme();
+		$frontendThemex = $config->getFrontendTheme();
 		$viewResolver = $sm->get('ViewResolver');
 		$viewThemeResolver = new \Zend\View\Resolver\AggregateResolver();
 		$templateMapResolver = new \Zend\View\Resolver\TemplateMapResolver();
 		$pathResolver = new \Zend\View\Resolver\TemplatePathStack();
 		$frontendThemes = array('dxdefault');
-		if (!in_array($frontendTheme, $frontendThemes))
+		$asseticConfiguration = array();
+		if (!in_array($frontendThemex, $frontendThemes))
 		{
-			$frontendThemes[] = $frontendTheme;
+			$frontendThemes[] = $frontendThemex;
 		}
 		foreach ($frontendThemes as $frontendTheme)
 		{
@@ -110,12 +111,25 @@ class Module
 			}
 			if (isset($templateMaps['front'][$frontendTheme]['assetic_configuration']))
 			{
-				$themeAssets = $sm->get('dxThemeAssets');
-				$themeAssets->renderThemeAssets($frontendTheme, $templateMaps['front'][$frontendTheme]['assetic_configuration']);
+				$asseticConfiguration = \Dxapp\Utility\ArrayManager::merge($asseticConfiguration, $templateMaps['front'][$frontendTheme]['assetic_configuration']);
 			}
 		}
+
 		$viewThemeResolver->attach($templateMapResolver);
 		$viewResolver->attach($viewThemeResolver, 100);
+
+		if (!empty($asseticConfiguration))
+		{
+			$as = $sm->get('dxThemeAssets');
+			$router = $e->getRouteMatch();
+			$as->setRouteName($router->getMatchedRouteName());
+			$as->setControllerName($router->getParam('controller'));
+			$as->setActionName($router->getParam('action'));
+			$as->setThemeAssets($asseticConfiguration);
+			$as->renderThemeAssets();
+			$as->setupRenderer($sm->get('ViewRenderer'));
+		}
+		
 		$section = $config->getApplicationSection();
 		if ($section == 'admin')
 		{
@@ -124,6 +138,7 @@ class Module
 				$template = str_replace('/', '/admin-', $template);
 			}
 		}
+
 		$viewModel->setTemplate($template);
 	}
 
@@ -201,6 +216,7 @@ class Module
 					$asseticFilterManager = $sm->get('Assetic\FilterManager');
 
 					$asseticService = new Service\ThemeAssets($asseticConfig);
+					$asseticService->setServiceManager($sm);
 					$asseticService->setAssetManager($asseticAssetManager);
 					$asseticService->setFilterManager($asseticFilterManager);
 					return $asseticService;

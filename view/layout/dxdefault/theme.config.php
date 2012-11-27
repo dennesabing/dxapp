@@ -39,6 +39,7 @@ $arr = array(
 			'base_js' => array(
 				'assets' => array(
 					'js/jquery-1.8.0.min.js',
+					'js/jquery-ui.1.8.24.custom.min.js',
 					'js/html5.js',
 					'js/bootstrap.min.js',
 					'js/prettify.js'
@@ -51,6 +52,35 @@ $arr = array(
 				'assets' => array(
 					'img/*.png',
 					'img/*.ico',
+				),
+				'options' => array(
+					'move_raw' => true,
+				)
+			),
+			'dynatree_css' => array(
+				'assets' => array(
+					'js/plugins/dynatree/skin/ui.dynatree.css'
+				),
+				'filters' => array(
+					'CssRewriteFilter' => array(
+						'name' => 'Assetic\Filter\CssRewriteFilter'
+					)
+				),
+				'options' => array(
+					'output' => 'css/dynatree.css'
+				)
+			),
+			'dynatree_js' => array(
+				'assets' => array(
+					'js/plugins/dynatree/jquery.cookie.js'
+				),
+				'options' => array(
+					'output' => 'js/dynatree.js'
+				)
+			),
+			'dynatree_images' => array(
+				'assets' => array(
+					'js/plugins/dynatree/skin/*.gif'
 				),
 				'options' => array(
 					'move_raw' => true,

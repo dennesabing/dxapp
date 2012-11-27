@@ -7,11 +7,17 @@ use AsseticBundle\Service as AsseticService,
     Assetic\AssetWriter,
     Assetic\Asset\AssetInterface,
     Assetic\Asset\AssetCache,
+    Zend\View\Renderer\RendererInterface as Renderer,
+    AsseticBundle\View\StrategyInterface,		
     Assetic\Cache\FilesystemCache;
 
 class ThemeAssets extends AsseticService
 {
 
+	protected $themeAssets = NULL;
+	
+	protected $serviceManager = NULL;
+	
 	private function cache(AssetInterface $asset)
 	{
 		return $this->configuration->getCacheEnabled() ? new AssetCache($asset, new FilesystemCache($this->configuration->getCachePath())) : $asset;
@@ -66,10 +72,35 @@ class ThemeAssets extends AsseticService
 		return $result;
 	}
 
-	public function renderThemeAssets($name, $assets)
+	public function setServiceManager($sm)
 	{
-		$conf = (array) $assets;
-
+		$this->serviceManager = $sm;
+		return $this;
+	}
+	
+	/**
+	 * Set the theme assets
+	 * @param type $assets
+	 * @return \Dxapp\Service\ThemeAssets
+	 */
+	public function setThemeAssets($assets)
+	{
+		$this->themeAssets = $assets;
+		if(isset($this->themeAssets['routes']))
+		{
+			$this->configuration->setRoutes($this->themeAssets['routes']);
+		}
+		return $this;
+	}
+	
+	public function getThemeAssets()
+	{
+		return $this->themeAssets;
+	}
+	
+	public function renderThemeAssets()
+	{
+		$conf = (array) $this->getThemeAssets();
 		$factory = new Factory\AssetFactory($conf['root_path']);
 		$factory->setAssetManager($this->getAssetManager());
 		$factory->setFilterManager($this->getFilterManager());
@@ -79,11 +110,11 @@ class ThemeAssets extends AsseticService
 		foreach ($collections as $name => $options)
 		{
 			$assets = isset($options['assets']) ? $options['assets'] : array();
-			$filters = isset($options['filters']) ? $options['filters'] : array();
+			$filtersx = isset($options['filters']) ? $options['filters'] : array();
 			$options = isset($options['options']) ? $options['options'] : array();
 			$options['output'] = isset($options['output']) ? $options['output'] : $name;
 
-			$filters = $this->initFilters($filters);
+			$filters = $this->initFilters($filtersx);
 
 			/** @var $asset \Assetic\Asset\AssetCollection */
 			$asset = $factory->createAsset($assets, $filters, $options);
@@ -110,5 +141,4 @@ class ThemeAssets extends AsseticService
 		$writer = new AssetWriter($this->configuration->getWebPath());
 		$writer->writeManagerAssets($this->assetManager);
 	}
-
 }

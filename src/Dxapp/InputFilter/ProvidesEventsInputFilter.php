@@ -176,7 +176,7 @@ class ProvidesEventsInputFilter extends InputFilter
 					$filter = new InputFilter();
 					foreach ($fs as $eleName => $ele)
 					{
-						if (isset($ele['name']))
+						if (!isset($ele['name']))
 						{
 							$ele['name'] = $eleName;
 						}

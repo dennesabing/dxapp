@@ -147,7 +147,7 @@ class Base extends ZendForm
 				}
 				if ($add)
 				{
-					$this->add($fs);
+					$this->add($this->xprepareFieldsets($fs));
 				}
 			}
 		}
@@ -162,10 +162,52 @@ class Base extends ZendForm
 				}
 				if ($add)
 				{
-					$this->add($ele);
+					$this->add($this->xprepareElement($ele));
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Parse and Prepare fieldset before adding to form
+	 * @param array $fs The fieldset with elements
+	 * @return array
+	 */
+	public function xprepareFieldsets($fs)
+	{
+		if(isset($fs['elements']))
+		{
+			foreach($fs['elements'] as $eleName => $ele)
+			{
+				$fs['elements'][$eleName] = $this->xprepareElement($ele);
+			}
+		}
+		return $fs;
+	}
+	
+	/**
+	 * Prepare elements before adding to form
+	 * @param array $ele
+	 * @return array
+	 */
+	public function xprepareElement($ele)
+	{
+		if(isset($ele['spec']['options']['value_options']))
+		{
+			$valueOptions = $ele['spec']['options']['value_options'];
+			if(!is_array($valueOptions))
+			{
+				if (FALSE !== strpos($valueOptions, 'getServiceManager'))
+				{
+					$callback = explode('|', $valueOptions);
+					$serviceIndex = $callback[1];
+					$method = $callback[2];
+					$sm = $this->getServiceManager()->get($serviceIndex)->$method();
+					die;
+				}
+			}
+		}
+		return $ele;
 	}
 
 	/**
@@ -177,6 +219,14 @@ class Base extends ZendForm
 	{
 		$this->serviceManager = $sm;
 		return $this;
+	}
+
+	/**
+	 * Return the service manager
+	 */
+	public function getServiceManager()
+	{
+		return $this->serviceManager;
 	}
 
 	public function setModuleOptions($moduleOptions)

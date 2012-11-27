@@ -162,7 +162,7 @@ class ModuleOptions extends AbstractOptions
 	 * @var boolean
 	 */
 	protected $enableFormDlu = TRUE;
-	
+
 	/**
 	 * Set if to enable/disable Dlu on form rendering
 	 * @param boolean $flag
@@ -173,7 +173,7 @@ class ModuleOptions extends AbstractOptions
 		$this->enableFormDlu = $flag;
 		return $this;
 	}
-	
+
 	/**
 	 * Return if to enable/disable Dlu on form rendering
 	 * @return boolean
@@ -182,7 +182,7 @@ class ModuleOptions extends AbstractOptions
 	{
 		return $this->enableFormDlu;
 	}
-	
+
 	/**
 	 * Set the Name of the sender for the email verification
 	 * @param string $name The Name of the sender
@@ -230,7 +230,7 @@ class ModuleOptions extends AbstractOptions
 	 */
 	public function setThemeFolders($themeFolder)
 	{
-		
+
 		if (file_exists($themeFolder))
 		{
 			$folder = new \DirectoryIterator($themeFolder);
@@ -243,7 +243,8 @@ class ModuleOptions extends AbstractOptions
 					$configFile = $path . '/' . $in . '/theme.config.php';
 					if (file_exists($configFile))
 					{
-						$this->addTemplateMap($in, include_once $configFile);
+						$themeConfig = include_once $configFile;
+						$this->addTemplateMap($in, $themeConfig);
 					}
 				}
 				$folder->next();
@@ -251,7 +252,7 @@ class ModuleOptions extends AbstractOptions
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Add a theme folder
 	 * @param type $themeFolder
@@ -290,10 +291,10 @@ class ModuleOptions extends AbstractOptions
 	 */
 	public function getThemeFolders()
 	{
-		if (empty($this->themeFolders))
-		{
+		//if (empty($this->themeFolders))
+		//{
 			$this->setThemeFolders(__DIR__ . '../../../../view/layout');
-		}
+		//}
 		return $this->themeFolders;
 	}
 
@@ -739,4 +740,5 @@ class ModuleOptions extends AbstractOptions
 	{
 		return $this->breadcrumbMain;
 	}
+
 }
