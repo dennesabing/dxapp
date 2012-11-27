@@ -168,6 +168,33 @@ class Base extends ZendForm
 		}
 	}
 	
+    /**
+     * Set a single element attribute
+     *
+     * @param  string $key
+     * @param  mixed  $value
+     * @return Element|ElementInterface
+     */
+	public function setAttribute($key, $value)
+	{
+		if($key == 'action')
+		{
+			if(is_array($value))
+			{
+				foreach($value as $key => $val)
+				{
+					if($key == 'route')
+					{
+						$view = $this->getServiceManager()->get('ViewRenderer');
+						$action = $view->url($val);
+						return parent::setAttribute('action', $action);
+					}
+				}
+			}
+		}
+		return parent::setAttribute($key, $value);
+	}
+	
 	/**
 	 * Parse and Prepare fieldset before adding to form
 	 * @param array $fs The fieldset with elements

@@ -21,5 +21,6 @@ class Form extends ProvidesEventsForm
 		$this->setModuleOptions($moduleOptions);
 		$this->formFromXml($this->getModuleOptions()->getXmlFormFolder() . '/' . $xmlFile);
 		$this->getEventManager()->trigger('init', $this);
+		return $this;
 	}
 }
