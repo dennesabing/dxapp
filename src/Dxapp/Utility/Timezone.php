@@ -1,4 +1,5 @@
 <?php
+namespace Dxapp\Utility;
 /**
  * Return the timezone of and region and country
  *
