@@ -35,6 +35,24 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	}
 	
 	/**
+	 * Get the RouteMatch
+	 * @return type
+	 */
+	public function getRouteMatch()
+	{
+		return $this->getController()->getEvent()->getRouteMatch();
+	}
+	
+	/**
+	 * Return all params
+	 * @return array
+	 */
+	public function getParams()
+	{
+		return $this->getController()->getEvent()->getRouteMatch()->getParams();	
+	}
+	
+	/**
 	 * Return the Entity Manager
 	 * @return DoctrineEntityManager
 	 */
