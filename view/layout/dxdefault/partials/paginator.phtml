@@ -1,0 +1,85 @@
+<?php
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+$params = $this->params;
+$route = $this->route;
+?>
+
+
+
+
+
+
+
+
+<?php if ($this->pageCount): ?>
+	<div class="pagination">
+		<ul>
+
+			<li><span>
+					Event <?php echo $this->firstItemNumber; ?> - <?php echo $this->lastItemNumber; ?> of <?php echo $this->totalItemCount; ?>
+					
+				</span></li>
+
+			<!-- First page link -->
+			<?php if (isset($this->previous)): ?>
+			<?php $params['page'] = $this->first;?>
+				<li><a title="First Page" href="<?php echo $this->dxHtml()->url($route, $params); ?>">
+						First
+					</a></li>
+			<?php else: ?>
+				<li class="disabled"><a href="#" title="First Page">First</a></li>
+			<?php endif; ?>
+
+			<!-- Previous page link -->
+			<?php if (isset($this->previous)): ?>
+				<?php $params['page'] = $this->previous;?>
+				<li><a title="Previous Page" href="<?php echo $this->dxHtml()->url($route, $params); ?>">
+						&laquo;
+					</a></li>
+			<?php else: ?>
+				<li class="disabled"><a href="#">&laquo;</a></li>
+			<?php endif; ?>
+
+
+			<!-- Numbered page links -->
+			<?php foreach ($this->pagesInRange as $page): ?>
+				<?php if ($page != $this->current): ?>
+					<?php $params['page'] = $page;?>
+					<li><a title="Page <?php echo $page?>" href="<?php echo $this->dxHtml()->url($route, $params); ?>">
+						<?php echo $page; ?>
+					</a></li>
+				<?php else: ?>
+					<li class="active"><a href="#"><?php echo $page; ?></a></li>
+				<?php endif; ?>
+			<?php endforeach; ?>
+
+
+			<!-- Next page link -->
+			<?php if (isset($this->next)): ?>
+				<?php $params['page'] = $this->next;?>
+				<li><a title="Next page" href="<?php echo $this->dxHtml()->url($route, $params); ?>">
+						&raquo;
+					</a></li>
+			<?php else: ?>
+				<li class="disabled"><a href="#">&raquo;</a></li>
+			<?php endif; ?>
+
+			<!-- Last page link -->
+			<?php if (isset($this->next)): ?>
+				<?php $params['page'] = $this->last;?>
+				<li><a title="Last page" href="<?php echo $this->dxHtml()->url($route, $params); ?>">
+						Last
+					</a></li>
+			<?php else: ?>
+				<li class="disabled"><a href="#">Last</a></li>
+			<?php endif; ?>
+
+
+
+		</ul>
+	</div>
+<?php endif; ?>
+
