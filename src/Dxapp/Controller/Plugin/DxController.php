@@ -22,7 +22,17 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 */
 	protected $moduleOptions = NULL;
 
-	
+	/**
+	 * Get the value of the requested param
+	 * @param mixed $param The key to look
+	 * @param mixed $default The default value to return if key not found
+	 * 
+	 * @return mixed
+	 */
+	public function getParam($param, $default = FALSE)
+	{
+		return $this->getController()->getEvent()->getRouteMatch()->getParam($param, $default);	
+	}
 	
 	/**
 	 * Return the Entity Manager
