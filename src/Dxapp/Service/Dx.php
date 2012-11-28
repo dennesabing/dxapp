@@ -71,6 +71,31 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 		return $this->em;
 	}
 	
+	/**
+	 * Get the requested service
+	 * @param type $serviceIndex
+	 * @return boolean
+	 */
+	public function getService($serviceIndex)
+	{
+		if ($serviceIndex !== NULL)
+		{
+			if ($this->getServiceManager()->has($serviceIndex))
+			{
+				return $this->getService($serviceIndex);
+			}
+		}
+		return FALSE;
+	}
+	
+	/**
+	 * Return the User Service
+	 * @return object
+	 */
+	public function getUserService()
+	{
+		return $this->getService('dxuser_service_user');
+	}
 	
 	/**
 	 * Return the AuthService
@@ -78,7 +103,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 */
 	public function getAuth()
 	{
-		return $this->serviceManager->get('zfcuser_auth_service');
+		return $this->getService('zfcuser_auth_service');
 	}
 
 	/**
@@ -89,9 +114,9 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	{
 		if ($modulePrefix !== NULL)
 		{
-			if ($this->getServiceManager()->get($modulePrefix . '_session') instanceof \Zend\Session\Container)
+			if ($this->getService($modulePrefix . '_session') instanceof \Zend\Session\Container)
 			{
-				return $this->getServiceManager()->get($modulePrefix . '_session');
+				return $this->getService($modulePrefix . '_session');
 			}
 			return new \Zend\Session\Container($modulePrefix . '_session');
 		}
@@ -110,14 +135,15 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 		{
 			if ($this->getServiceManager()->has($modulePrefix))
 			{
-				return $this->getServiceManager()->get($modulePrefix);
+				return $this->getService($modulePrefix);
 			}
 			if ($this->getServiceManager()->has($modulePrefix . '_module_options'))
 			{
-				return $this->getServiceManager()->get($modulePrefix . '_module_options');
+				return $this->getService($modulePrefix . '_module_options');
 			}
+			return FALSE;
 		}
-		return $this->getServiceManager()->get('dxapp_module_options');
+		return $this->getService('dxapp_module_options');
 	}
 
 	/**
@@ -140,7 +166,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 */
 	public function hasCacheFromFile($key, $options = array())
 	{
-		$cache = $this->getServiceManager()->get('dxFilecache')->getFileCache()->setOptions($options);
+		$cache = $this->getService('dxFilecache')->getFileCache()->setOptions($options);
 		if ($cache->hasItem($key))
 		{
 			return $cache->getItem($key);
@@ -156,7 +182,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 */
 	public function hasCacheFromMemory($key, $options = array())
 	{
-		$cache = $this->getServiceManager()->get('dxFilecache')->getMemoryCache()->setOptions($options);
+		$cache = $this->getService('dxFilecache')->getMemoryCache()->setOptions($options);
 		if ($cache->hasItem($key))
 		{
 			return $cache->getItem($key);
@@ -173,7 +199,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 */
 	public function cacheToFile($key, $data, $options = array())
 	{
-		$cache = $this->getServiceManager()->get('dxFilecache')->getFileCache()->setOptions($options);
+		$cache = $this->getService('dxFilecache')->getFileCache()->setOptions($options);
 		return $cache->setItem($key, $data);
 	}
 
@@ -186,7 +212,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 */
 	public function cacheToMemory($key, $data, $options = array())
 	{
-		$cache = $this->getServiceManager()->get('dxFilecache')->getMemoryCache()->setOptions($options);
+		$cache = $this->getService('dxFilecache')->getMemoryCache()->setOptions($options);
 		return $cache->setItem($key, $data);
 	}
 
@@ -199,7 +225,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 */
 	public function cacheAFile($key, $data, $options = array())
 	{
-		$cache = $this->getServiceManager()->get('dxFilecache')->getFileCache()->setOptions($options);
+		$cache = $this->getService('dxFilecache')->getFileCache()->setOptions($options);
 		return $cache->setItem($key, $data);
 	}
 
@@ -212,7 +238,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 */
 	public function cacheAnObject($key, $data, $options = array())
 	{
-		$cache = $this->getServiceManager()->get('dxFilecache')->getFileCache()->setOptions($options);
+		$cache = $this->getService('dxFilecache')->getFileCache()->setOptions($options);
 		return $cache->setItem($key, $data);
 	}
 
@@ -225,7 +251,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 */
 	public function cacheAnArray($key, $data, $options = array())
 	{
-		$cache = $this->getServiceManager()->get('dxFilecache')->getFileCache()->setOptions($options);
+		$cache = $this->getService('dxFilecache')->getFileCache()->setOptions($options);
 		return $cache->setItem($key, $data);
 	}
 
@@ -247,15 +273,6 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 		}
 	}
 	
-	/**
-	 * Return the User Service
-	 * @return object
-	 */
-	public function getUserService()
-	{
-		return $this->getServiceManager()->get('dxuser_service_user');
-	}
-
 	/**
 	 * Set service manager instance
 	 *

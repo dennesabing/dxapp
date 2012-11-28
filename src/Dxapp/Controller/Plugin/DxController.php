@@ -22,6 +22,8 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 */
 	protected $moduleOptions = NULL;
 
+	
+	
 	/**
 	 * Return the Entity Manager
 	 * @return DoctrineEntityManager
@@ -146,6 +148,15 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	public function gotoAccessError()
 	{
 		$this->pageNotFound();
+	}
+	
+	/**
+	 * Go to error page showing that a service is not available
+	 * or module is not installed
+	 */
+	public function gotoServiceNotFound()
+	{
+		
 	}
 
 	/**
