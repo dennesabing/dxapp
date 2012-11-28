@@ -7,8 +7,6 @@ use AsseticBundle\Service as AsseticService,
     Assetic\AssetWriter,
     Assetic\Asset\AssetInterface,
     Assetic\Asset\AssetCache,
-    Zend\View\Renderer\RendererInterface as Renderer,
-    AsseticBundle\View\StrategyInterface,		
     Assetic\Cache\FilesystemCache;
 
 class ThemeAssets extends AsseticService

@@ -55,6 +55,14 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	}
 
 	/**
+	 * REturn a service
+	 */
+	public function getService($service)
+	{
+		return $this->getDxService()->get($service);
+	}
+	
+	/**
 	 * Return the DxService
 	 * @return type
 	 */
@@ -100,7 +108,7 @@ class DxController extends AbstractPlugin implements ServiceManagerAwareInterfac
 	 */
 	public function getUserService()
 	{
-		return $this->getServiceManager()->get('dxuser_service_user');
+		return $this->getDxService()->get('dxuser_service_user');
 	}
 	
 	/**

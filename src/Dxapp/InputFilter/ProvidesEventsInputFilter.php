@@ -227,7 +227,7 @@ class ProvidesEventsInputFilter extends InputFilter
 				if (FALSE !== strpos($mapper, 'getServiceManager'))
 				{
 					$smOptions = explode('|', $mapper);
-					$mapper = $this->serviceManager->get(trim($smOptions[1]));
+					$mapper = $this->serviceManager->get('dxService')->get(trim($smOptions[1]));
 					$v['options']['mapper'] = $mapper;
 					return new \ZfcUser\Validator\RecordExists(array(
 								'mapper' => $mapper,
@@ -240,7 +240,7 @@ class ProvidesEventsInputFilter extends InputFilter
 				if (FALSE !== strpos($mapper, 'getServiceManager'))
 				{
 					$smOptions = explode('|', $mapper);
-					$mapper = $this->serviceManager->get(trim($smOptions[1]));
+					$mapper = $this->serviceManager->get('dxService')->get(trim($smOptions[1]));
 					$v['options']['mapper'] = $mapper;
 					return new \ZfcUser\Validator\NoRecordExists(array(
 								'mapper' => $mapper,

@@ -12,7 +12,6 @@
 namespace Dxapp\Form;
 
 use Zend\Form\Form as ZendForm;
-use Dxapp\InputFilter\ProvidesEventsInputFilter;
 
 class Base extends ZendForm
 {
@@ -185,7 +184,7 @@ class Base extends ZendForm
 				{
 					if ($key == 'route')
 					{
-						$view = $this->getServiceManager()->get('ViewRenderer');
+						$view = $this->getServiceManager()->get('dxService')->get('ViewRenderer');
 						$action = $view->url($val);
 						return parent::setAttribute('action', $action);
 					}
@@ -229,7 +228,7 @@ class Base extends ZendForm
 					$callback = explode('|', $valueOptions);
 					$serviceIndex = $callback[1];
 					$method = $callback[2];
-					$valueOptions = $this->getServiceManager()->get($serviceIndex)->$method();
+					$valueOptions = $this->getServiceManager()->get('dxService')->get($serviceIndex)->$method();
 					$ele['spec']['options']['value_options'] = $valueOptions;
 				}
 			}
