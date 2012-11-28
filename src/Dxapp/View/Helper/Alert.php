@@ -45,6 +45,19 @@ class Alert extends AbstractHelper
 	}
 
 	/**
+	 * Render an message directly to scrreen
+	 * @param type $type
+	 * @param type $msg
+	 */
+	public function renderAlert($type, $msg)
+	{
+		return '<div class="alert alert-' . $type . '">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+			  ' . $msg . '
+            </div>';
+	}
+	
+	/**
 	 * Add a msg to alerts
 	 * @param string $msg The alert to append
 	 * @param string $type The type of alert
@@ -91,7 +104,7 @@ class Alert extends AbstractHelper
 	 */
 	public function addNotice($msg, $pos = NULL, $nextPage = FALSE)
 	{
-		$this->add($msg, 'notice', $pos, $nextPage);
+		$this->add($msg, 'block', $pos, $nextPage);
 		return $this;
 	}
 
@@ -176,5 +189,5 @@ class Alert extends AbstractHelper
 	{
 		return $this->render();
 	}
-
+	
 }
