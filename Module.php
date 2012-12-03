@@ -89,7 +89,7 @@ class Module
 		$template = 'layout/layout'; //$viewModel->getTemplate();
 		$templateMaps = $config->getTemplateMaps();
 		$frontendThemex = $config->getFrontendTheme();
-		$frontendThemes = $config->getFrontendThemes();//array('dxdefault');
+		$frontendThemes = $config->getFrontendThemes(); //array('dxdefault');
 		$viewResolver = $sm->get('ViewResolver');
 		$viewThemeResolver = new \Zend\View\Resolver\AggregateResolver();
 		$templateMapResolver = new \Zend\View\Resolver\TemplateMapResolver();
@@ -131,13 +131,16 @@ class Module
 				$e->setResponse($response);
 			}
 			$router = $e->getRouteMatch();
-			$as->setRouteName($router->getMatchedRouteName());
-			$as->setControllerName($router->getParam('controller'));
-			$as->setActionName($router->getParam('action'));
-			$as->setThemeAssets($asseticConfiguration);
-			$as->renderThemeAssets();
-			$as->initLoadedModules($this->getLoadedModules());
-			$as->setupRenderer($sm->get('ViewRenderer'));
+			if ($router)
+			{
+				$as->setRouteName($router->getMatchedRouteName());
+				$as->setControllerName($router->getParam('controller'));
+				$as->setActionName($router->getParam('action'));
+				$as->setThemeAssets($asseticConfiguration);
+				$as->renderThemeAssets();
+				$as->initLoadedModules($this->getLoadedModules());
+				$as->setupRenderer($sm->get('ViewRenderer'));
+			}
 		}
 
 		$section = $config->getApplicationSection();
