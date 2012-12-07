@@ -8,6 +8,16 @@ use Dxapp\EventManager\EventProvider;
 
 class Dx extends EventProvider implements ServiceManagerAwareInterface
 {
+	
+	/**
+	 * The datetime formats
+	 * @var string
+	 */
+	const DATETIMEFORMAT_SHORT = 'm/d/Y h:m a';
+	const DATETIMEFORMAT_MEDIUM = 'm/d/Y h:m a';
+	const DATETIMEFORMAT_LONGER = 'm/d/Y h:m a';
+	const DATETIMEFORMAT_SQL = 'Y-m-d H:m:s';
+	
 	/**
 	 * The View Renderer
 	 * @var object
@@ -272,6 +282,95 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 			
 		}
 	}
+	
+	/**
+	 * 
+	 * DATES
+	 * 
+	 */
+	
+	/**
+	 * All dates in DB is saved in UTC Timezone
+	 * Parse date to be SQL-oriented format
+	 * @param string $date
+	 * @param string $time
+	 * @param string|array $options If string was given, then it is the timezone
+	 * @return object \DateTime
+	 */
+	public function dateTimeToSql($date, $time, $options = array())
+	{
+		$tz = $this->get('dxoptions')->getDbTimezone();
+		$date = \DateTime::createFromFormat(self::DATETIMEFORMAT_SHORT, $date . ' ' . $time, new \DateTimeZone($tz));
+		return $date;
+	}
+	
+	/**
+	 * Parse date from SQL
+	 * @param string $dateTime The Date from SQL
+	 * @param string $tz The Timezone that this date was saved
+	 * @return object \DateTime
+	 */
+	public function dateTimeFromSql($dateTime, $tz = FALSE)
+	{
+		if($dateTime instanceof \DateTime)
+		{
+			$dateTime = $dateTime->format(self::DATETIMEFORMAT_SQL);
+		}
+		if(!$tz)
+		{
+			$tz = 'UTC';
+		}
+		return \DateTime::createFromFormat(self::DATETIMEFORMAT_SQL, $dateTime, new \DateTimeZone($tz));
+	}
+	
+	/**
+	 * REturn the current Date time from UTC
+	 */
+	public function utcDateTime()
+	{
+		return new \DateTime('now', new \DateTimezone('UTC'));
+	}
+	
+	/**
+	 * REturn the Current Date time based on Website Set Timezone
+	 */
+	public function siteDateTime()
+	{
+		return new \DateTime('now', new \DateTimezone($this->get('dxoptions')->getSiteTimezone()));
+	}
+	
+	/**
+	 * Return Date time based on Server PHP Settings
+	 */
+	public function serverDateTime()
+	{
+		return new \DateTime('now', new \DateTimezone($this->defaultTimezone()));
+	}
+	
+	/**
+	 * Return current time based on local timezone
+	 */
+	public function localDateTime()
+	{
+		
+	}
+	
+	
+	/**
+	 * return The Default time zone from PHP Settings
+	 * @return string
+	 */
+	public function defaultTimezone()
+	{
+		return date_default_timezone_get();
+	}
+	
+	/**
+	 * 
+	 * DATES
+	 * 
+	 */
+	
 	
 	/**
 	 * Set service manager instance

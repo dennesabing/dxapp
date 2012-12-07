@@ -2,9 +2,9 @@
 
 namespace Dxapp\Options;
 
-use Zend\Stdlib\AbstractOptions;
+use Dxapp\Options\Options;
 
-class ModuleOptions extends AbstractOptions
+class ModuleOptions extends Options
 {
 
 	/**
@@ -135,13 +135,19 @@ class ModuleOptions extends AbstractOptions
 			'url' => '/'
 		)
 	);
-	
+
 	/**
 	 * Timezone to use when saving dates in DB
 	 * Note: not used in Doctrine's Timestampable
 	 * @var string
 	 */
 	protected $dbTimezone = 'UTC';
+
+	/**
+	 * The default timezone of the website.
+	 * @var string
+	 */
+	protected $siteTimezone = 'Asia/Manila';
 
 	/**
 	 * The SiteWide DEfault maxRows
@@ -289,7 +295,7 @@ class ModuleOptions extends AbstractOptions
 			$this->templateMaps['front'][$name] = $config;
 		}
 	}
-	
+
 	/**
 	 * Add to frontEndThemes
 	 * @param type $name
@@ -298,7 +304,7 @@ class ModuleOptions extends AbstractOptions
 	{
 		$this->frontendThemes[] = $name;
 	}
-	
+
 	/**
 	 * REturn the collected themes
 	 * @return array
@@ -325,7 +331,7 @@ class ModuleOptions extends AbstractOptions
 	{
 		//if (empty($this->themeFolders))
 		//{
-			$this->setThemeFolders(__DIR__ . '../../../../view/layout');
+		$this->setThemeFolders(__DIR__ . '../../../../view/layout');
 		//}
 		return $this->themeFolders;
 	}

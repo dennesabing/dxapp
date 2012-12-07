@@ -57,6 +57,10 @@ class Module
 						$cache
 		);
 
+//		$em = $sm->get('doctrine.entitymanager.orm_default');
+//		\Doctrine\DBAL\Types\Type::addType('utcdatetime', 'Dxapp\Doctrine\Type\Datetime');
+//		$em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('Datetime', 'datetime');
+
 
 		$sluggableListener = new \Gedmo\Sluggable\SluggableListener;
 		$sluggableListener->setAnnotationReader($cachedAnnotationReader);
@@ -205,6 +209,14 @@ class Module
 					$dxService->setEntityManager($sm->get('doctrine.entitymanager.orm_default'));
 					$dxService->setViewRenderer($sm->get('ViewRenderer'));
 					return $dxService;
+				},
+				'dx' => function ($sm)
+				{
+					return $sm->get('dxService');
+				},
+				'dxoptions' => function ($sm)
+				{
+					return $sm->get('dxapp_module_options');
 				},
 				'dxFilecache' => function($sm)
 				{

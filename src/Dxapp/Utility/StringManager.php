@@ -28,4 +28,45 @@ class StringManager
 		return $array;
 	}
 
+	/**
+	 * Convert a string into camelcased Sttring
+	 * my_field = myField
+	 * @param string $string
+	 * @return string
+	 */
+	public static function camelCase($str, $capFirstLetter = FALSE)
+	{
+		$str = strtolower($str);
+		if ($capFirstLetter)
+		{
+			$str[0] = strtoupper($str[0]);
+		}
+		$func = create_function('$c', 'return strtoupper($c[1]);');
+		return preg_replace_callback('/_([a-z])/', $func, $str);
+	}
+
+	/**
+	 * Convert a string into underscore
+	 * MyField = my_field
+	 * @param string $string
+	 * @return string
+	 */
+	public static function underscore($str)
+	{
+		$str[0] = strtolower($str[0]);
+		$func = create_function('$c', 'return "_" . strtolower($c[1]);');
+		return preg_replace_callback('/([A-Z])/', $func, $str);
+	}
+	
+	/**
+	 * Properly camelcase a string
+	 * usually used on setters/getter
+	 * @param string $str
+	 * @return string
+	 */
+	public static function ucc($str, $capFirstLetter = FALSE)
+	{
+		return self::camelCase(self::underscore($str), $capFirstLetter);
+	}
+
 }
