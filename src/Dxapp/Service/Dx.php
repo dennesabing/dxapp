@@ -31,18 +31,6 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	protected $em = NULL;
 
 	/**
-	 * the Module Options
-	 * @var type 
-	 */
-	protected $options = NULL;
-
-	/**
-	 * The Auth service
-	 * @var type 
-	 */
-	protected $authService = NULL;
-
-	/**
 	 * Set the ViewRenderer Object
 	 * @param type $viewRenderer
 	 * @return \DxUser\Service\User 
@@ -82,23 +70,6 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	}
 
 	/**
-	 * Get the requested service
-	 * @param type $serviceIndex
-	 * @return boolean
-	 */
-	public function get($serviceIndex)
-	{
-		if ($serviceIndex !== NULL)
-		{
-			if ($this->getServiceManager()->has($serviceIndex))
-			{
-				return $this->getServiceManager()->get($serviceIndex);
-			}
-		}
-		return FALSE;
-	}
-
-	/**
 	 * Return the User Service
 	 * @return object
 	 */
@@ -117,20 +88,20 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	}
 
 	/**
-	 * Return the Session Container
-	 * @return \Zend\Session\Container
+	 * Get the requested service
+	 * @param type $serviceIndex
+	 * @return boolean
 	 */
-	public function getSession($modulePrefix = NULL)
+	public function get($serviceIndex)
 	{
-		if ($modulePrefix !== NULL)
+		if ($serviceIndex !== NULL)
 		{
-			if ($this->get($modulePrefix . '_session') instanceof \Zend\Session\Container)
+			if ($this->getServiceManager()->has($serviceIndex))
 			{
-				return $this->get($modulePrefix . '_session');
+				return $this->getServiceManager()->get($serviceIndex);
 			}
-			return new \Zend\Session\Container($modulePrefix . '_session');
 		}
-		return new \Zend\Session\Container('dxApp_session');
+		return FALSE;
 	}
 
 	/**
@@ -166,6 +137,23 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	{
 		$this->options = $options;
 		return $this;
+	}
+
+	/**
+	 * Return the Session Container
+	 * @return \Zend\Session\Container
+	 */
+	public function getSession($modulePrefix = NULL)
+	{
+		if ($modulePrefix !== NULL)
+		{
+			if ($this->get($modulePrefix . '_session') instanceof \Zend\Session\Container)
+			{
+				return $this->get($modulePrefix . '_session');
+			}
+			return new \Zend\Session\Container($modulePrefix . '_session');
+		}
+		return new \Zend\Session\Container('dxApp_session');
 	}
 
 	/**
@@ -337,7 +325,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 */
 	public function serverDateTime()
 	{
-		return new \DateTime('now', new \DateTimezone($this->defaultTimezone()));
+		return new \DateTime('now', new \DateTimezone(date_default_timezone_get()));
 	}
 
 	/**
@@ -345,16 +333,16 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 */
 	public function localDateTime()
 	{
-		
+		return new \DateTime('now', new \DateTimezone($this->defaultTimezone()));
 	}
 
 	/**
-	 * return The Default time zone from PHP Settings
+	 * return The Default time zone From DxGeolocations
 	 * @return string
 	 */
 	public function defaultTimezone()
 	{
-		return date_default_timezone_get();
+		return $this->get('dxgeolocations')->getTimezone();
 	}
 
 	/**

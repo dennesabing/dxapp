@@ -28,7 +28,6 @@ class Options extends AbstractOptions
 				{
 					return $this->{$property};
 				}
-				throw new \Dxapp\Exception\BadMethodCallException('Method("' .  $method . '") and Property ("' . $property. '") doesn\'t exist.');
 				break;
 			case 'set':
 				$property = \Dxapp\Utility\StringManager::ucc(substr($method, 3));
@@ -41,10 +40,9 @@ class Options extends AbstractOptions
 				{
 					return $this->{$property} = isset($args[0]) ? $args[0] : NULL;
 				}
-				throw new \Dxapp\Exception\BadMethodCallException('Method("' .  $method . '") and Property ("' . $property. '") doesn\'t exist.');
 				break;
-			case 'uns' :
-			case 'has' :
+			default;
 		}
+		throw new \Dxapp\Exception\BadMethodCallException('Method("' .  $method . '") and Property ("' . $property. '") doesn\'t exist.');
 	}
 }
