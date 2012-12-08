@@ -84,6 +84,10 @@ class ThemeAssets extends AsseticService
 	public function setThemeAssets($assets)
 	{
 		$this->themeAssets = $assets;
+		if(isset($this->themeAssets['default']))
+		{
+			$this->configuration->setDefault($this->themeAssets['default']);
+		}
 		if(isset($this->themeAssets['routes']))
 		{
 			$this->configuration->setRoutes($this->themeAssets['routes']);

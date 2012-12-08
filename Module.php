@@ -57,8 +57,8 @@ class Module
 						$cache
 		);
 
-//		$em = $sm->get('doctrine.entitymanager.orm_default');
-//		\Doctrine\DBAL\Types\Type::addType('utcdatetime', 'Dxapp\Doctrine\Type\Datetime');
+		$em = $sm->get('doctrine.entitymanager.orm_default');
+		\Doctrine\DBAL\Types\Type::overrideType('datetime', 'Dxapp\Doctrine\Types\UTCDatetimeType');
 //		$em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('Datetime', 'datetime');
 
 
@@ -135,16 +135,16 @@ class Module
 				$e->setResponse($response);
 			}
 			$router = $e->getRouteMatch();
+			$as->setThemeAssets($asseticConfiguration);
 			if ($router)
 			{
 				$as->setRouteName($router->getMatchedRouteName());
 				$as->setControllerName($router->getParam('controller'));
 				$as->setActionName($router->getParam('action'));
-				$as->setThemeAssets($asseticConfiguration);
-				$as->renderThemeAssets();
-				$as->initLoadedModules($this->getLoadedModules());
-				$as->setupRenderer($sm->get('ViewRenderer'));
 			}
+			$as->renderThemeAssets();
+			$as->initLoadedModules($this->getLoadedModules());
+			$as->setupRenderer($sm->get('ViewRenderer'));
 		}
 
 		$section = $config->getApplicationSection();

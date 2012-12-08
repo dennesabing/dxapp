@@ -8,16 +8,16 @@ use Dxapp\EventManager\EventProvider;
 
 class Dx extends EventProvider implements ServiceManagerAwareInterface
 {
-	
 	/**
 	 * The datetime formats
 	 * @var string
 	 */
+
 	const DATETIMEFORMAT_SHORT = 'm/d/Y h:m a';
 	const DATETIMEFORMAT_MEDIUM = 'm/d/Y h:m a';
 	const DATETIMEFORMAT_LONGER = 'm/d/Y h:m a';
 	const DATETIMEFORMAT_SQL = 'Y-m-d H:m:s';
-	
+
 	/**
 	 * The View Renderer
 	 * @var object
@@ -41,7 +41,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 * @var type 
 	 */
 	protected $authService = NULL;
-	
+
 	/**
 	 * Set the ViewRenderer Object
 	 * @param type $viewRenderer
@@ -61,7 +61,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	{
 		return $this->renderer;
 	}
-	
+
 	/**
 	 * Set Doctrine Entity Manager
 	 * @return User
@@ -80,7 +80,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	{
 		return $this->em;
 	}
-	
+
 	/**
 	 * Get the requested service
 	 * @param type $serviceIndex
@@ -97,7 +97,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 		}
 		return FALSE;
 	}
-	
+
 	/**
 	 * Return the User Service
 	 * @return object
@@ -106,7 +106,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	{
 		return $this->get('dxuser_service_user');
 	}
-	
+
 	/**
 	 * Return the AuthService
 	 * @return type
@@ -282,47 +282,40 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 			
 		}
 	}
-	
+
 	/**
 	 * 
 	 * DATES
 	 * 
 	 */
-	
+
 	/**
 	 * All dates in DB is saved in UTC Timezone
+	 * \Dxapp\Doctrine\Types\Extension
 	 * Parse date to be SQL-oriented format
 	 * @param string $date
 	 * @param string $time
 	 * @param string|array $options If string was given, then it is the timezone
 	 * @return object \DateTime
 	 */
-	public function dateTimeToSql($date, $time, $options = array())
+	public function dateTimeFromForm($date, $time, $options = array())
 	{
-		$tz = $this->get('dxoptions')->getDbTimezone();
-		$date = \DateTime::createFromFormat(self::DATETIMEFORMAT_SHORT, $date . ' ' . $time, new \DateTimeZone($tz));
+		$date = \DateTime::createFromFormat(self::DATETIMEFORMAT_SHORT, $date . ' ' . $time, new \DateTimeZone($this->defaultTimezone()));
 		return $date;
 	}
-	
+
 	/**
-	 * Parse date from SQL
+	 * Parse date from SQL.
+	 * All dates from SQL are saved in UTC Timezone
 	 * @param string $dateTime The Date from SQL
-	 * @param string $tz The Timezone that this date was saved
 	 * @return object \DateTime
 	 */
-	public function dateTimeFromSql($dateTime, $tz = FALSE)
+	public function dateTimeFromSql($dateTime)
 	{
-		if($dateTime instanceof \DateTime)
-		{
-			$dateTime = $dateTime->format(self::DATETIMEFORMAT_SQL);
-		}
-		if(!$tz)
-		{
-			$tz = 'UTC';
-		}
+		$tz = 'UTC';
 		return \DateTime::createFromFormat(self::DATETIMEFORMAT_SQL, $dateTime, new \DateTimeZone($tz));
 	}
-	
+
 	/**
 	 * REturn the current Date time from UTC
 	 */
@@ -330,7 +323,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	{
 		return new \DateTime('now', new \DateTimezone('UTC'));
 	}
-	
+
 	/**
 	 * REturn the Current Date time based on Website Set Timezone
 	 */
@@ -338,7 +331,7 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	{
 		return new \DateTime('now', new \DateTimezone($this->get('dxoptions')->getSiteTimezone()));
 	}
-	
+
 	/**
 	 * Return Date time based on Server PHP Settings
 	 */
@@ -346,16 +339,15 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	{
 		return new \DateTime('now', new \DateTimezone($this->defaultTimezone()));
 	}
-	
+
 	/**
-	 * Return current time based on local timezone
+	 * Return current time based on local timezone. User timezone.
 	 */
 	public function localDateTime()
 	{
 		
 	}
-	
-	
+
 	/**
 	 * return The Default time zone from PHP Settings
 	 * @return string
@@ -364,14 +356,13 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	{
 		return date_default_timezone_get();
 	}
-	
+
 	/**
 	 * 
 	 * DATES
 	 * 
 	 */
-	
-	
+
 	/**
 	 * Set service manager instance
 	 *

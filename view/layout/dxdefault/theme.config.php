@@ -42,6 +42,7 @@ $arr = array(
 				'assets' => array(
 					'js/jquery-1.7.1.min.js',
 					'js/jquery-ui.1.8.24.custom.min.js',
+					'js/jquery.cookie.js',
 					'js/html5.js',
 					'js/bootstrap.min.js',
 					'js/prettify.js',
@@ -61,6 +62,12 @@ $arr = array(
 				'options' => array(
 					'move_raw' => true,
 				)
+			),
+		),
+		'default' => array(
+			'assets' => array(),
+			'options' => array(
+				'mixin' => true,
 			),
 		),
 	)
