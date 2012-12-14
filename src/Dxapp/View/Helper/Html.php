@@ -10,6 +10,7 @@
 namespace Dxapp\View\Helper;
 
 use Dxapp\View\AbstractHelper;
+use Zend\Form\Form;
 
 class Html extends AbstractHelper
 {
@@ -370,4 +371,27 @@ class Html extends AbstractHelper
 			return $str;
 		}
 	}
+
+	/**
+	 * REturn the given elements in an Inline Structure
+	 * @param object $form \Dxapp\Form\Form or Fieldset
+	 * @param array $elements array of name of elements
+	 * @return string
+	 */
+	public function formElementsInline($form, $elements = array())
+	{
+		$str = '';
+		$str .= '<div class="dx-elegroup-inline">';
+		foreach ($elements as $ele)
+		{
+			$element = $form->get($ele);
+			$str .= '<div class="left dx-ele-inline">';
+			$str .= $this->view->formControlGroupTwb($element);
+			$str .= '</div><!-- .dx-ele-inline -->';
+		}
+		$str .= '<div class="clear"></div>';
+		$str .= '</div><!-- .dx-form-inline -->';
+		return $str;
+	}
+
 }

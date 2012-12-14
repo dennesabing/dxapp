@@ -250,7 +250,13 @@ class Module
 					$asseticService->setAssetManager($asseticAssetManager);
 					$asseticService->setFilterManager($asseticFilterManager);
 					return $asseticService;
-				}
+				},
+                'dlu_twb_view_helper_configurator'  => function($sm) {
+                    $genUtil    = $sm->get('dlu_twb_gen_util');
+                    $formUtil   = $sm->get('dlu_twb_form_util');
+                    $instance   = new \Dxapp\Form\View\HelperConfig($genUtil, $formUtil);
+                    return $instance;
+                }
 			)
 		);
 	}
@@ -284,7 +290,7 @@ class Module
 				'dxAlert' => function()
 				{
 					return new \Dxapp\View\Helper\Alert();
-				}
+				},
 			),
 		);
 	}

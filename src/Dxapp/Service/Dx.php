@@ -286,9 +286,13 @@ class Dx extends EventProvider implements ServiceManagerAwareInterface
 	 * @param string|array $options If string was given, then it is the timezone
 	 * @return object \DateTime
 	 */
-	public function dateTimeFromForm($date, $time, $options = array())
+	public function dateTimeFromForm($date, $time, $tz = NULL, $options = array())
 	{
-		$date = \DateTime::createFromFormat(self::DATETIMEFORMAT_SHORT, $date . ' ' . $time, new \DateTimeZone($this->defaultTimezone()));
+		if(empty($tz))
+		{
+			$tz = $this->defaultTimezone();
+		}
+		$date = \DateTime::createFromFormat(self::DATETIMEFORMAT_SHORT, $date . ' ' . $time, new \DateTimeZone($tz));
 		return $date;
 	}
 
