@@ -14,7 +14,7 @@ function formDuplicateRow(row)
 	var id = row + count;
 	var rowCloned = jQuery(row).clone(true).attr('id', id.replace('#',''));
 	rowCloned.find('label').remove();
-	rowCloned.find('a.canBeDuplicated').attr('href', 'javascript:formDuplicateRowRemove(\''+ id +'\')').removeClass('btn-success').addClass('btn-danger').find('i').removeClass('icon-plus').addClass('icon-minus');
+	rowCloned.find('a.canBeDuplicated').attr('href', 'javascript:formDuplicateRowRemove(\''+ id +'\')').attr('title','Remove').removeClass('btn-success').addClass('btn-danger').find('i').removeClass('icon-plus').addClass('icon-minus');
 	if(count > 1)
 	{
 		rowCloned.insertAfter(row + (count - 1));
