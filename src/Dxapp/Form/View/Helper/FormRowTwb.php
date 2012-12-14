@@ -50,7 +50,8 @@ class FormRowTwb extends DluFormRowTwb
 		$options = $element->getOptions();
 		if (isset($options['dx']))
 		{
-			return $this->setDxOptions($options['dx']);
+			$this->setDxOptions($options['dx']);
+			return $this->dxOptions;
 		}
 		return array();
 	}
@@ -102,9 +103,11 @@ class FormRowTwb extends DluFormRowTwb
 	{
 		if (isset($this->dxOptions['controlGroupClass']))
 		{
-			return $this->dxOptions['controlGroupClass'] . ' ';
+			$controlGroupClass = $this->dxOptions['controlGroupClass'] . ' ';
+			unset($this->dxOptions['controlGroupClass']);
+			return $controlGroupClass;
 		}
-		return '';
+		return FALSE;
 	}
 
 	/**
@@ -169,16 +172,17 @@ class FormRowTwb extends DluFormRowTwb
 			$labelHelper = $this->getLabelHelper();
 			$label = $labelHelper($element, $displayOptions);
 		}
+		
+		$controlGroupOpen = str_replace('class="', 'class="' . $this->getControlGroupClass(), $controlGroupOpen);
 		if ($this->floatStart())
 		{
-			$controlGroupOpen = '<div class="row">' . str_replace('class="', 'class="' . $this->getControlGroupClass(), $controlGroupOpen);
+			$controlGroupOpen = '<div class="row">' . $controlGroupOpen;
 		}
 		if ($this->floatEnd())
 		{
 			$controlGroupClose .= '</div>';
 		}
-
-
+		
 		$markup = $controlGroupOpen
 				. $label
 				. $controlsOpen
