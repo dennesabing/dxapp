@@ -39,6 +39,13 @@ class FormRowTwb extends DluFormRowTwb
 	 * @var boolean
 	 */
 	protected $floatStart = FALSE;
+	
+	
+	/**
+	 * The element that started the float;
+	 * @var string
+	 */
+	protected $elementNameFloatStart;
 
 	/**
 	 * Return Dx Options
@@ -89,7 +96,22 @@ class FormRowTwb extends DluFormRowTwb
 	{
 		if ($this->floatStart && isset($this->dxOptions['floatEnd']) && $this->dxOptions['floatEnd'])
 		{
+			unset($this->dxOptions['floatEnd']);
 			$this->floatStart = FALSE;
+			return TRUE;
+		}
+		return FALSE;
+	}
+	
+	/**
+	 * 
+	 * @return boolean
+	 */
+	protected function canBeDuplicated()
+	{
+		if (isset($this->dxOptions['canBeDuplicated']) && $this->dxOptions['canBeDuplicated'])
+		{
+			unset($this->dxOptions['canBeDuplicated']);
 			return TRUE;
 		}
 		return FALSE;
@@ -108,6 +130,16 @@ class FormRowTwb extends DluFormRowTwb
 			return $controlGroupClass;
 		}
 		return FALSE;
+	}
+	
+	/**
+	 * Get a clean name of an element. to be used for Ids
+	 * @param type $element
+	 * @return type
+	 */
+	public function getCleanName($element)
+	{
+		return str_replace(array('[',']'),'',$element->getName());
 	}
 
 	/**
@@ -173,10 +205,18 @@ class FormRowTwb extends DluFormRowTwb
 			$label = $labelHelper($element, $displayOptions);
 		}
 		
-		$controlGroupOpen = str_replace('class="', 'class="' . $this->getControlGroupClass(), $controlGroupOpen);
+		$name = $this->getCleanName($element);
+		$controlGroupOpen = str_replace('class="', 'class="' . $this->getControlGroupClass(), str_replace('<div', '<div id=' . $name, $controlGroupOpen));
 		if ($this->floatStart())
 		{
-			$controlGroupOpen = '<div class="row">' . $controlGroupOpen;
+			$this->elementNameFloatStart = $name;
+			$controlGroupOpen = '<div id="' . $name . '-row" class="row ' . $name . '-row">' . $controlGroupOpen;
+		}
+		if($this->canBeDuplicated())
+		{
+			$canBeDuplicated = '<div class="span1 control-group-dupe" id="' . $name .'-dupe">
+				<label for="' . $element->getName() .'" class="control-label">&nbsp;</label><a title="Add Price" href="javascript:formDuplicateRow(\'#' . $this->elementNameFloatStart . '-row\');" class="btn btn-success canBeDuplicated"><i class="icon-plus icon-white"></i></a></div>';
+			$controlGroupClose .= $canBeDuplicated;
 		}
 		if ($this->floatEnd())
 		{
