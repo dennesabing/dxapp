@@ -2,3 +2,10 @@ body {
     padding-top: 60px;
     padding-bottom: 40px;
 }
+/**DX FORMS**/   
+.dx-element-wrapper{}
+.dx-form-duplicate{
+          border-bottom: 2px solid green;
+          margin-bottom: 25px;
+        }
+/**DX FORMS**/
