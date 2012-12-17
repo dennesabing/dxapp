@@ -8,29 +8,40 @@ function dump(msg){
 	alertMessage(msg);
 }
 /***FORMS***/
-function formDuplicateRow(selector, label)
+function formDuplicateFieldset(selector, label, insertMode)
 {
-	var count = jQuery(selector.replace('#','.')).length;
+	var count = jQuery(selector).length;
 	var id = selector + count;
-	var rowCloned = jQuery(selector).clone(true).attr('id', id.replace('#',''));
+	var oldId = selector + (count - 1);
+	var insertMode = ':first-child';
+	if(insertMode != undefined)
+	{
+		insertMode = insertMode;
+	}
+	var rowCloned = jQuery(selector).first().clone(true).removeClass(oldId.replace('.','')).addClass(id.replace('.',''));
 	if(!label)
 	{
 		rowCloned.find('label').remove();
 	}
-	rowCloned.find('a.canBeDuplicated').attr('href', 'javascript:formDuplicateRowRemove(\''+ id +'\')').attr('title','Remove').removeClass('btn-success').addClass('btn-danger').find('i').removeClass('icon-plus').addClass('icon-minus');
+	rowCloned.find('input,select,textarea').each(function(i, x){
+		var v = jQuery(x);
+		v.val('');
+		var name = v.attr('name').replace(0,count);
+		v.attr('name', name).attr('id', name);
+	});
+	rowCloned.find('a.anchorCanBeDuplicated').attr('onclick', 'javascript:formDuplicateFieldsetRemove(this)').attr('title','Remove').removeClass('btn-success').addClass('btn-danger').find('i').removeClass('icon-plus').addClass('icon-minus');
 	if(count > 1)
 	{
-		rowCloned.insertAfter(selector + (count - 1));
+		rowCloned.insertBefore(selector + (count - 1));
 	}
 	else
 	{
 		rowCloned.insertAfter(selector);
 	}
 }
-
-function formDuplicateRowRemove(selector)
+function formDuplicateFieldsetRemove(selector)
 {
-	jQuery(selector).remove();
+	jQuery(selector).closest('fieldset').remove();
 }
 /**
  * Unresize all text area

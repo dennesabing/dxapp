@@ -109,7 +109,9 @@ class FormRowTwb extends DluFormRowTwb
 	}
 
 	/**
-	 * 
+	 * Check if we have to add
+	 * to add a button to duplicate/clone an
+	 * element or set of elements via javascript
 	 * @return boolean
 	 */
 	protected function canBeDuplicated()
@@ -121,9 +123,11 @@ class FormRowTwb extends DluFormRowTwb
 		}
 		return FALSE;
 	}
-	
+
 	/**
-	 * The argument for the canBeDuplicated
+	 * The argument to be passed to the js
+	 * usually the selector
+	 * see dx.js function: formDuplicateRow
 	 * @return boolean
 	 */
 	protected function canBeDuplicatedArg()
@@ -136,23 +140,35 @@ class FormRowTwb extends DluFormRowTwb
 		}
 		return FALSE;
 	}
-	
+
 	/**
 	 * If to include Labels in cloning
 	 * @return boolean
 	 */
 	protected function canBeDuplicatedLabel()
 	{
-		if (isset($this->dxOptions['canBeDuplicatedLabel'])  && $this->dxOptions['canBeDuplicatedLabel'])
+		if (isset($this->dxOptions['canBeDuplicatedLabel']) && $this->dxOptions['canBeDuplicatedLabel'])
 		{
 			unset($this->dxOptions['canBeDuplicatedLabel']);
 			return TRUE;
 		}
 		return FALSE;
 	}
-	
-	
-	
+
+	/**
+	 * The placeholder that will be used when 
+	 * replacing id/names when cloning
+	 * @return boolean
+	 */
+	protected function canBeDuplicatedTitle()
+	{
+		if (isset($this->dxOptions['canBeDuplicatedTitle']) && $this->dxOptions['canBeDuplicatedTitle'])
+		{
+			return $this->dxOptions['canBeDuplicatedTitle'];
+			unset($this->dxOptions['canBeDuplicatedTitle']);
+		}
+		return '';
+	}
 
 	/**
 	 * REturn the controlGroupClass node
@@ -184,7 +200,7 @@ class FormRowTwb extends DluFormRowTwb
 		}
 		return FALSE;
 	}
-	
+
 	/**
 	 * get the Wrapper Start class
 	 * @return string
@@ -288,12 +304,13 @@ class FormRowTwb extends DluFormRowTwb
 			$label = $labelHelper($element, $displayOptions);
 		}
 
+		$elementName = $element->getName();
 		$name = $this->getCleanName($element);
 		$controlGroupOpen = str_replace('class="', 'class="' . $this->getControlGroupClass(), str_replace('<div', '<div id=' . $name, $controlGroupOpen));
 		$wrapperStart = '';
 		if ($this->getWrapperStart())
 		{
-			$wrapperStart = '<div id="' . $name . '-wrapper" class="dx-element-wrapper' . $this->getWrapperStartClass() .'">';
+			$wrapperStart = '<div id="' . $name . '-wrapper" class="dx-element-wrapper ' . $this->getWrapperStartClass() . '">';
 		}
 
 		if ($this->floatStart())
@@ -306,24 +323,59 @@ class FormRowTwb extends DluFormRowTwb
 			$controlGroupOpen = $wrapperStart . $controlGroupOpen;
 		}
 
-
+		/**
+		 * If an element or set of elements will be duplicated
+		 */
 		if ($this->canBeDuplicated())
 		{
+			/**
+			 * \[([0-9])\]
+			 * feeCollection[0][feeStatus]
+			 * feeCollection[3][feeStatus]
+			 */
+			$dupe = FALSE;
+			$matches = NULL;
+			$matched = NULL;
+			if (preg_match('/\[([0-9])\]/i', $elementName, $matches))
+			{
+				if(isset($matches[1]))
+				{
+					$matched = (int) $matches[1];
+					if($matched > 0)
+					{
+						$dupe = TRUE;
+					}
+				}
+			}
+
 			$canBeDuplicatedArg = '#' . $this->elementNameFloatStart . '-row';
 			$canBeDuplicatedArgGiven = $this->canBeDuplicatedArg();
-			if($canBeDuplicatedArgGiven)
+			if ($canBeDuplicatedArgGiven)
 			{
 				$canBeDuplicatedArg = $canBeDuplicatedArgGiven;
 			}
 			$canBeDuplicatedLabel = 'false';
-			if($this->canBeDuplicatedLabel())
+			if ($this->canBeDuplicatedLabel())
 			{
 				$canBeDuplicatedLabel = 'true';
 			}
+			$icon = 'icon-plus';
+			$btnClass = 'btn-success';
+			$jsFunction = 'formDuplicateFieldset(\'' . $canBeDuplicatedArg . '\',' . $canBeDuplicatedLabel . ');';
+			if ($dupe)
+			{
+				$icon = 'icon-minus';
+				$btnClass = 'btn-danger';
+				$jsFunction = 'formDuplicateFieldsetRemove(this);';
+			}
 			$canBeDuplicated = '<div class="span1 control-group-dupe" id="' . $name . '-dupe">
-				<label for="' . $element->getName() . '" class="control-label">&nbsp;</label><a title="Add Price" href="javascript:formDuplicateRow(\'' . $canBeDuplicatedArg. '\', ' . $canBeDuplicatedLabel . ');" class="btn btn-success canBeDuplicated"><i class="icon-plus icon-white"></i></a></div>';
+				<label for="' . $element->getName() . '" class="control-label">&nbsp;</label><a title="' . $this->canBeDuplicatedTitle() . '" 
+					href="javascript:void(0)" onclick="' . $jsFunction . '" 
+						class="anchorCanBeDuplicated btn ' . $btnClass . '"><i class="' . $icon . ' icon-white"></i></a></div>';
 			$controlGroupClose .= $canBeDuplicated;
 		}
+
+
 		if ($this->floatEnd())
 		{
 			$controlGroupClose .= '</div><!-- #' . $name . '-row -->';

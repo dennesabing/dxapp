@@ -41,6 +41,18 @@ class Base extends ZendForm
 	protected $xmlForm = NULL;
 
 	/**
+	 * Fieldset after preCollection
+	 * @var array
+	 */
+	protected $newFieldsets = array();
+
+	/**
+	 * Elements after preCollection
+	 * @var array
+	 */
+	protected $newElements = array();
+
+	/**
 	 * Transform an XML file to array
 	 * @param string $xmlFile
 	 * @return type
@@ -78,6 +90,7 @@ class Base extends ZendForm
 		}
 		$fieldsets = array();
 		$elements = array();
+		$collectionNames = array();
 		if ($xml && is_array($xml))
 		{
 			if (isset($xml['form']['name']))
@@ -104,7 +117,7 @@ class Base extends ZendForm
 			{
 				foreach ($xml['form']['fieldsets'] as $fsName => $fs)
 				{
-					$fieldsets = $this->orderElement($fsName, $fieldsets, $fs);
+					$fieldsets[$fsName] = $fs;
 				}
 			}
 
@@ -114,21 +127,46 @@ class Base extends ZendForm
 			{
 				foreach ($xml['form']['elements'] as $eleName => $ele)
 				{
-					if (isset($ele['fieldset']) && !empty($ele['fieldset']))
+					$add = TRUE;
+					if (isset($ele['enable']) && (int) $ele['enable'] == 0)
+					{
+						$add = FALSE;
+					}
+					if ($add)
 					{
 						if (!isset($ele['name']))
 						{
 							$ele['name'] = $eleName;
 						}
-						$eleArr = array('spec' => $ele);
-						$fieldsets[$ele['fieldset']]['elements'][] = $eleArr;
-					}
-					else
-					{
-						$elements = $this->orderElement($eleName, $elements, $ele);
+						$type = isset($ele['type']) ? $ele['type'] : NULL;
+						if (strpos($type, 'Zend\Form\Element\Collection') !== FALSE)
+						{
+							$collectionNames[] = isset($ele['name']) ? $ele['name'] : $eleName;
+						}
+						if (isset($ele['fieldset']) && !empty($ele['fieldset']))
+						{
+							$eleArr = array('spec' => $ele);
+							$fieldsets[$ele['fieldset']]['elements'][] = $eleArr;
+						}
+						else
+						{
+							$elements[$eleName] = $ele;
+						}
 					}
 				}
 			}
+		}
+
+		$this->prepareCollection($fieldsets, $elements, $collectionNames);
+		$fieldsets = $this->newFieldsets;
+		$elements = $this->newElements;
+		foreach ($fieldsets as $fsName => $fs)
+		{
+			$fieldsets = $this->orderElement($fsName, $fieldsets, $fs);
+		}
+		foreach ($elements as $eleName => $ele)
+		{
+			$elements = $this->orderElement($eleName, $elements, $ele);
 		}
 
 		if (!empty($fieldsets))
@@ -165,6 +203,30 @@ class Base extends ZendForm
 				}
 			}
 		}
+	}
+
+	/**
+	 * Prepare the form.
+	 * Check for given collections
+	 * 
+	 */
+	public function prepareCollection($fieldsets, $elements, $collectionNames)
+	{
+		foreach ($collectionNames as $collectionName)
+		{
+			$targetElement = $elements[$collectionName]['options']['target_element'];
+			if (isset($targetElement['fieldset']))
+			{
+				$fieldsetElements = $targetElement['fieldset'];
+				if (isset($fieldsets[$fieldsetElements]))
+				{
+					$elements[$collectionName]['options']['target_element'] = $fieldsets[$fieldsetElements];
+					unset($fieldsets[$fieldsetElements]);
+				}
+			}
+		}
+		$this->newElements = $elements;
+		$this->newFieldsets = $fieldsets;
 	}
 
 	/**

@@ -3,9 +3,8 @@ body {
     padding-bottom: 40px;
 }
 /**DX FORMS**/   
-.dx-element-wrapper{}
-.dx-form-duplicate{
-          border-bottom: 2px solid green;
+fieldset .canBeDuplicated{
+          border-bottom: 1px solid #1C1E22;
           margin-bottom: 25px;
         }
 /**DX FORMS**/
