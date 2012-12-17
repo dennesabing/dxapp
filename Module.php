@@ -188,6 +188,20 @@ class Module
 		$config->setApplicationSection($section);
 	}
 
+	public function getControllerPluginConfig()
+	{
+		return array(
+			'factories' => array(
+				'dxController' => function($sm)
+				{
+					$plugin = new \Dxapp\Controller\Plugin\DxController;
+					$plugin->setServiceManager($sm);
+					return $plugin;
+				},
+			),
+		);
+	}
+
 	function getServiceConfig()
 	{
 		return array(
@@ -251,12 +265,13 @@ class Module
 					$asseticService->setFilterManager($asseticFilterManager);
 					return $asseticService;
 				},
-                'dlu_twb_view_helper_configurator'  => function($sm) {
-                    $genUtil    = $sm->get('dlu_twb_gen_util');
-                    $formUtil   = $sm->get('dlu_twb_form_util');
-                    $instance   = new \Dxapp\Form\View\HelperConfig($genUtil, $formUtil);
-                    return $instance;
-                }
+				'dlu_twb_view_helper_configurator' => function($sm)
+				{
+					$genUtil = $sm->get('dlu_twb_gen_util');
+					$formUtil = $sm->get('dlu_twb_form_util');
+					$instance = new \Dxapp\Form\View\HelperConfig($genUtil, $formUtil);
+					return $instance;
+				}
 			)
 		);
 	}
@@ -280,6 +295,7 @@ class Module
 					$config = $sm->get('dx')->getModuleOptions();
 					$html = new \Dxapp\View\Helper\Html();
 					$html->setUseAbsoluteUrl($config->getUseAbsoluteUrl());
+					$html->setServiceManager($sm);
 					$html->setUseSecureUrl($config->getUseSecureUrl());
 					return $html;
 				},

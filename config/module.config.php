@@ -72,7 +72,7 @@ $arr = array(
 	),
     'controller_plugins' => array(
         'invokables' => array(
-            'dxcontroller' => 'Dxapp\Controller\Plugin\DxController',
+//            'dxController' => 'Dxapp\Controller\Plugin\DxController',
         ),
     ),
 	'assetic_configuration' => array(
