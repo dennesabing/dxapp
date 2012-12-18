@@ -306,7 +306,7 @@ class FormRowTwb extends DluFormRowTwb
 
 		$elementName = $element->getName();
 		$name = $this->getCleanName($element);
-		$controlGroupOpen = str_replace('class="', 'class="' . $this->getControlGroupClass(), str_replace('<div', '<div id=' . $name, $controlGroupOpen));
+		$controlGroupOpen = str_replace('class="', 'class="' . $this->getControlGroupClass(), str_replace('<div', '<div id=' . $name . '-control-group', $controlGroupOpen));
 		$wrapperStart = '';
 		if ($this->getWrapperStart())
 		{
@@ -386,6 +386,8 @@ class FormRowTwb extends DluFormRowTwb
 			$controlGroupClose .= '</div><div class="clearfix"></div><!-- #' . $name . '-wrapper -->';
 		}
 
+		$elementString = str_replace('id="' . $elementName . '"', 'id="' . $name . '"', $elementString);
+		$label = str_replace('for="' . $elementName . '"', 'for="' . $name . '"', $label);
 		$markup = $controlGroupOpen
 				. $label
 				. $controlsOpen

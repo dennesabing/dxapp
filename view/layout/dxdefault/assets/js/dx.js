@@ -13,12 +13,12 @@ function formDuplicateFieldset(selector, label, insertMode)
 	var count = jQuery(selector).length;
 	var id = selector + count;
 	var oldId = selector + (count - 1);
-	var insertMode = ':first-child';
+	var insertMode = 'first';
 	if(insertMode != undefined)
 	{
 		insertMode = insertMode;
 	}
-	var rowCloned = jQuery(selector).first().clone(true).removeClass(oldId.replace('.','')).addClass(id.replace('.',''));
+	var rowCloned = jQuery(selector + ':first').clone(true).removeClass(oldId.replace('.','')).addClass(id.replace('.',''));
 	if(!label)
 	{
 		rowCloned.find('label').remove();
@@ -30,14 +30,7 @@ function formDuplicateFieldset(selector, label, insertMode)
 		v.attr('name', name).attr('id', name);
 	});
 	rowCloned.find('a.anchorCanBeDuplicated').attr('onclick', 'javascript:formDuplicateFieldsetRemove(this)').attr('title','Remove').removeClass('btn-success').addClass('btn-danger').find('i').removeClass('icon-plus').addClass('icon-minus');
-	if(count > 1)
-	{
-		rowCloned.insertBefore(selector + (count - 1));
-	}
-	else
-	{
-		rowCloned.insertAfter(selector);
-	}
+	rowCloned.insertAfter(selector + ':first');
 }
 function formDuplicateFieldsetRemove(selector)
 {

@@ -121,13 +121,13 @@ class Base extends ZendForm
 				}
 			}
 
-
-
 			if (isset($xml['form']['elements']) && !empty($xml['form']['elements']))
 			{
 				foreach ($xml['form']['elements'] as $eleName => $ele)
 				{
 					$add = TRUE;
+					$isCollection = FALSE;
+					$isFieldset = FALSE;
 					if (isset($ele['enable']) && (int) $ele['enable'] == 0)
 					{
 						$add = FALSE;
@@ -139,11 +139,24 @@ class Base extends ZendForm
 							$ele['name'] = $eleName;
 						}
 						$type = isset($ele['type']) ? $ele['type'] : NULL;
-						if (strpos($type, 'Zend\Form\Element\Collection') !== FALSE)
+						if (strpos($type, 'Form\Element\Collection') !== FALSE)
 						{
-							$collectionNames[] = isset($ele['name']) ? $ele['name'] : $eleName;
+							$isCollection = TRUE;
 						}
 						if (isset($ele['fieldset']) && !empty($ele['fieldset']))
+						{
+							$isFieldset = TRUE;
+						}
+						if ($isCollection)
+						{
+							if (isset($ele['options']['target_element']['fieldset']))
+							{
+								$collectionFieldset = $ele['options']['target_element']['fieldset'];
+								$ele['options']['target_element'] = $fieldsets[$collectionFieldset];
+								unset($fieldsets[$collectionFieldset]);
+							}
+						}
+						if ($isFieldset)
 						{
 							$eleArr = array('spec' => $ele);
 							$fieldsets[$ele['fieldset']]['elements'][] = $eleArr;
@@ -157,9 +170,6 @@ class Base extends ZendForm
 			}
 		}
 
-		$this->prepareCollection($fieldsets, $elements, $collectionNames);
-		$fieldsets = $this->newFieldsets;
-		$elements = $this->newElements;
 		foreach ($fieldsets as $fsName => $fs)
 		{
 			$fieldsets = $this->orderElement($fsName, $fieldsets, $fs);
@@ -203,30 +213,6 @@ class Base extends ZendForm
 				}
 			}
 		}
-	}
-
-	/**
-	 * Prepare the form.
-	 * Check for given collections
-	 * 
-	 */
-	public function prepareCollection($fieldsets, $elements, $collectionNames)
-	{
-		foreach ($collectionNames as $collectionName)
-		{
-			$targetElement = $elements[$collectionName]['options']['target_element'];
-			if (isset($targetElement['fieldset']))
-			{
-				$fieldsetElements = $targetElement['fieldset'];
-				if (isset($fieldsets[$fieldsetElements]))
-				{
-					$elements[$collectionName]['options']['target_element'] = $fieldsets[$fieldsetElements];
-					unset($fieldsets[$fieldsetElements]);
-				}
-			}
-		}
-		$this->newElements = $elements;
-		$this->newFieldsets = $fieldsets;
 	}
 
 	/**
