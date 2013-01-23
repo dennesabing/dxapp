@@ -47,7 +47,12 @@ class Options extends AbstractOptions
 		throw new \Dxapp\Exception\BadMethodCallException('Method("' . $method . '") and Property ("' . $property . '") doesn\'t exist.');
 	}
 
-	
+	/**
+	 * Setter Magic
+	 * @param type $key
+	 * @param type $value
+	 * @return type
+	 */
 	public function __set($key, $value)
 	{
 		$property =  \Dxapp\Utility\StringManager::ucc($key);
@@ -62,7 +67,11 @@ class Options extends AbstractOptions
 		}
 	}
 	
-	
+	/**
+	 * Getter Magic
+	 * @param type $key
+	 * @return type
+	 */
 	public function __get($key)
 	{
 		$property = \Dxapp\Utility\StringManager::ucc($key);

@@ -47,8 +47,16 @@ class Module
 		$sm = $app->getServiceManager();
 		$evm = $sm->get('doctrine.eventmanager.orm_default');
 
-		$tablePrefix = new \Dxapp\Doctrine\Extension\TablePrefix('dx_');
-		$evm->addEventListener(\Doctrine\ORM\Events::loadClassMetadata, $tablePrefix);
+
+		$config = $sm->get('Config');
+
+		$tablePrefix = isset($config['doctrine']['connection']['orm_default']['params']['table_prefix']) ? $config['doctrine']['connection']['orm_default']['params']['table_prefix'] : FALSE;
+
+		if ($tablePrefix)
+		{
+			$tablePrefix = new \Dxapp\Doctrine\Extension\TablePrefix($tablePrefix);
+			$evm->addEventListener(\Doctrine\ORM\Events::loadClassMetadata, $tablePrefix);
+		}
 
 		$cache = $sm->get('doctrine.cache.memcache');
 		$annotationReader = new \Doctrine\Common\Annotations\AnnotationReader;

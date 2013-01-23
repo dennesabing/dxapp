@@ -77,5 +77,44 @@ class Entity
 		}
 		throw new \Dxapp\Exception\BadMethodCallException('Method("' . $method . '") and Property ("' . $property . '") doesn\'t exist.');
 	}
+	
+	/**
+	 * Setter Magic
+	 * @param type $key
+	 * @param type $value
+	 * @return type
+	 */
+	public function __set($key, $value)
+	{
+		$property =  \Dxapp\Utility\StringManager::ucc($key);
+		if (method_exists($this, 'set' . ucfirst($property)))
+		{
+			$method = 'set' . ucfirst($property);
+			return $this->{$method}($value);
+		}
+		if (isset($this->{$property}))
+		{
+			return $this->{$property} = $value;
+		}
+	}
+	
+	/**
+	 * Getter Magic
+	 * @param type $key
+	 * @return type
+	 */
+	public function __get($key)
+	{
+		$property = \Dxapp\Utility\StringManager::ucc($key);
+		if (method_exists($this, 'get' . ucfirst($property)))
+		{
+			$method = 'get' . ucfirst($property);
+			return $this->{$method}();
+		}
+		if (isset($this->{$property}))
+		{
+			return $this->{$property};
+		}
+	}
 
 }
