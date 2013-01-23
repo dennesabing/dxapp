@@ -125,6 +125,9 @@ class ModuleOptions extends Options
 	 */
 	protected $emailNoReplySenderName = 'No Reply';
 
+	
+	protected $isMobile = FALSE;
+	
 	/**
 	 * The Main breadcrumb
 	 * @var array

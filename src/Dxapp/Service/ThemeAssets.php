@@ -111,14 +111,34 @@ class ThemeAssets extends AsseticService
 		$factory->setAssetManager($this->getAssetManager());
 		$factory->setFilterManager($this->getFilterManager());
 		$factory->setDebug($this->configuration->isDebug());
-
+		$mobileDetect = $this->serviceManager->get('dxMobileDetect');
+		$isTablet= $mobileDetect->isTablet();
+		$assetName = 'assets';
+		$filterName = 'filters';
+		$optionName = 'options';
+		$outputName = 'output';
+		if($mobileDetect->isMobile())
+		{
+			$assetName = $assetName . 'Mobile';
+			$filterName = $filterName . 'Mobile';
+			$optionName = $optionName . 'Mobile';
+			$outputName = $outputName . 'Mobile';
+		}
+		if($mobileDetect->isTablet())
+		{
+			$assetName = $assetName . 'Tablet';
+			$filterName = $filterName . 'Tablet';
+			$optionName = $optionName . 'Tablet';
+			$outputName = $outputName . 'Mobile';
+		}
+		
 		$collections = (array) $conf['collections'];
 		foreach ($collections as $name => $options)
 		{
-			$assets = isset($options['assets']) ? $options['assets'] : array();
-			$filtersx = isset($options['filters']) ? $options['filters'] : array();
-			$options = isset($options['options']) ? $options['options'] : array();
-			$options['output'] = isset($options['output']) ? $options['output'] : $name;
+			$assets = isset($options[$assetName]) ? $options[$assetName] : isset($options['assets']) ? $options['assets'] : array();
+			$filtersx = isset($options[$filterName]) ? $options[$filterName] : isset($options['filters']) ? $options['filters'] : array();
+			$options = isset($options[$optionName]) ? $options[$optionName] : isset($options['options']) ? $options['options'] : array();
+			$options['output'] = isset($options[$outputName]) ? $options[$outputName] : isset($options['output']) ? $options['output'] : $name;
 
 			$filters = $this->initFilters($filtersx);
 

@@ -89,10 +89,11 @@ class Module
 		$app = $e->getParam('application');
 		$sm = $app->getServiceManager();
 		$config = $sm->get('dxapp_module_options');
+		$mobileDetect = $sm->get('dxMobileDetect');
 		$viewModel = $e->getViewModel();
 		$template = 'layout/layout'; //$viewModel->getTemplate();
-		$templateMaps = $config->getTemplateMaps();
 		$frontendThemex = $config->getFrontendTheme();
+		$templateMaps = $config->getTemplateMaps();
 		$frontendThemes = $config->getFrontendThemes(); //array('dxdefault');
 		$viewResolver = $sm->get('ViewResolver');
 		$viewThemeResolver = new \Zend\View\Resolver\AggregateResolver();
@@ -227,6 +228,10 @@ class Module
 				'dx' => function ($sm)
 				{
 					return $sm->get('dxService');
+				},
+				'dxMobileDetect' => function ($sm)
+				{
+					return new \Dxapp\Utility\MobileDetect();
 				},
 				'dxoptions' => function ($sm)
 				{
